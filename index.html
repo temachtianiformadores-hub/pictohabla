@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Comunicación</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Mi Tablero de Comunicación</h1>
+    
+    <div id="barra-frase" class="barra-frase">
+        <p>Frase: </p>
+        <div id="contenedor-frase"></div>
+        <button onclick="limpiarFrase()">Borrar</button>
+    </div>
+
+    <div class="grid-tablero" id="grid-tablero">
+        </div>
+
+    <script src="script.js"></script>
+    <div id="modal-buscador" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000;">
+    <div style="background:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow-y:auto; border-radius:15px;">
+        <h3>Buscar Pictograma en ARASAAC</h3>
+        <input type="text" id="input-busqueda" placeholder="Ejemplo: Manzana..." style="padding:10px; width:70%;">
+        <button onclick="buscarEnArasaac()" style="padding:10px;">Buscar</button>
+        <button onclick="cerrarBuscador()" style="padding:10px; background:#ccc;">Cancelar</button>
+        <div id="resultados-busqueda" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:10px; margin-top:20px;">
+            </div>
+    </div>
+</div>
+</body>
+</html>
