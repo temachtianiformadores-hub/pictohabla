@@ -14,7 +14,14 @@
         <div id="contenedor-frase"></div>
         <button onclick="limpiarFrase()">Borrar</button>
     </div>
-
+<div class="menu-config">
+    <button onclick="exportarTablero()" style="background:#28a745; color:white;">💾 Guardar Respaldo</button>
+    
+    <label for="importar-archivo" style="cursor:pointer; background:#007bff; color:white; padding:5px 10px; border-radius:5px; font-size:13px;">
+        📂 Cargar Respaldo
+    </label>
+    <input type="file" id="importar-archivo" style="display:none" onchange="importarTablero(event)">
+</div>
     <div class="grid-tablero" id="grid-tablero">
         </div>
 
@@ -30,4 +37,5 @@
     </div>
 </div>
 </body>
+
 </html>
