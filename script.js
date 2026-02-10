@@ -149,3 +149,40 @@ function limpiarFrase() {
 
 // Iniciar
 window.onload = renderizarTablero;
+// --- FUNCIÓN PARA EXPORTAR ---
+function exportarTablero() {
+    const dataStr = JSON.stringify(datosPictogramas);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const nombreArchivo = 'mi_tablero_comunicacion.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', nombreArchivo);
+    linkElement.click();
+}
+
+// --- FUNCIÓN PARA IMPORTAR ---
+function importarTablero(event) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+    lector.onload = function(e) {
+        try {
+            const contenido = JSON.parse(e.target.result);
+            
+            // Validamos que el archivo sea correcto
+            if (Array.isArray(contenido)) {
+                datosPictogramas = contenido;
+                localStorage.setItem('tablero_personalizado', JSON.stringify(datosPictogramas));
+                renderizarTablero();
+                alert("¡Tablero cargado con éxito!");
+            }
+        } catch (error) {
+            alert("Error: El archivo no es válido.");
+        }
+    };
+    lector.readAsText(archivo);
+}
+
