@@ -28,7 +28,39 @@ body {
     max-width: 1000px;
     margin: 0 auto;
 }
+/* Esto hace que el tablero sea flexible */
+.grid-tablero {
+    display: grid;
+    /* En teléfonos: 2 columnas. En tablets/PC: hasta 4 o 6 */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
+/* Ajuste específico para pantallas muy pequeñas (celulares) */
+@media (max-width: 480px) {
+    .grid-tablero {
+        grid-template-columns: repeat(2, 1fr); /* Fuerza 2 columnas */
+        gap: 8px;
+    }
+    
+    .card {
+        height: 140px; /* Un poco más pequeñas para que quepan más */
+        padding: 5px;
+    }
+
+    .card img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    h1 {
+        font-size: 1.2rem;
+    }
+}
 .card {
     background: white;
     border-radius: 15px;
@@ -64,4 +96,5 @@ body {
     height: 32px;
     cursor: pointer;
     font-size: 14px;
+
 }
