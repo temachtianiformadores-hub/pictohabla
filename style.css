@@ -96,5 +96,51 @@ body {
     height: 32px;
     cursor: pointer;
     font-size: 14px;
+}
+/* Cabecera con Logo */
+.encabezado-escuela {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-bottom: 3px solid #e0e0e0;
+    margin-bottom: 20px;
+}
 
+.logo-escuela {
+    height: 80px; /* Ajusta el tamaño según tu logo */
+    width: auto;
+}
+
+.nombre-escuela {
+    margin: 0;
+    color: #666;
+    font-style: italic;
+}
+
+/* Colores Amigables (Pastel) para las tarjetas */
+/* Sobrescribe tus colores anteriores con estos: */
+
+.card.sujeto { background-color: #d1e7ff; border: 2px solid #a4cdff; } /* Azul pastel */
+.card.verbo { background-color: #d4edda; border: 2px solid #b1dfbb; }  /* Verde pastel */
+.card.objeto { background-color: #fff3cd; border: 2px solid #ffeeba; } /* Amarillo pastel */
+.card.emocion { background-color: #f8d7da; border: 2px solid #f5c6cb; } /* Rosa pastel */
+
+/* Mejorar la tipografía y bordes */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5; /* Un gris muy suave de fondo */
+    margin: 0;
+}
+
+.card {
+    border-radius: 15px; /* Bordes más redondeados son más amigables */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Sombra muy suave */
+    transition: transform 0.2s;
+}
+
+.card:active {
+    transform: scale(0.95); /* Efecto de rebote al tocar */
 }
