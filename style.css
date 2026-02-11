@@ -144,3 +144,23 @@ body {
 .card:active {
     transform: scale(0.95); /* Efecto de rebote al tocar */
 }
+
+button {
+    border-radius: 20px;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.barra-frase {
+    background: white;
+    border-radius: 50px; /* Forma de cápsula */
+    padding: 15px 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
