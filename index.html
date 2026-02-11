@@ -32,18 +32,22 @@
         </div>
 
     <script src="script.js"></script>
-    <div id="modal-buscador" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000;">
-    <div style="background:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow-y:auto; border-radius:15px;">
-        <h3>Buscar Pictograma en ARASAAC</h3>
-        <input type="text" id="input-busqueda" placeholder="Ejemplo: Manzana..." style="padding:10px; width:70%;">
-        <button onclick="buscarEnArasaac()" style="padding:10px;">Buscar</button>
-        <button onclick="cerrarBuscador()" style="padding:10px; background:#ccc;">Cancelar</button>
-        <div id="resultados-busqueda" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:10px; margin-top:20px;">
-            </div>
+    <div id="modal-buscador" class="modal">
+    <div class="modal-content">
+        <h2 style="color: #555;">🔍 Buscar Imagen</h2>
+        <input type="text" id="input-busqueda" placeholder="Escribe aquí...">
+        <br>
+        <button class="btn-buscar-modal" onclick="buscarEnArasaac()">Buscar</button>
+        
+        <div id="resultados-busqueda"></div>
+        
+        <button class="btn-cerrar-modal" onclick="cerrarBuscador()">Cerrar</button>
     </div>
+</div>
 </div>
 </body>
 
 </html>
+
 
 
