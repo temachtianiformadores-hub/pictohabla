@@ -1,4 +1,4 @@
-/* 1. Limpieza total de márgenes */
+/* 1. ESTRUCTURA GENERAL */
 * {
     margin: 0;
     padding: 0;
@@ -6,64 +6,43 @@
 }
 
 body {
-    font-family: sans-serif;
-    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f8f9fa;
     padding: 20px;
+    color: #333;
 }
 
-/* 2. Rejilla del tablero */
-.grid-tablero {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-/* 3. LAS CELDAS (Aquí está el marco y la sombra) */
-.card {
-    background: #ffffff !important;
-    border: 3px solid #ced4da !important; /* Marco grueso y visible */
-    border-radius: 15px !important;
-    padding: 15px;
+/* 2. ENCABEZADO Y LOGO */
+.encabezado-escuela {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    
-    /* SOMBRA MUY MARCADA PARA QUE LA NOTES */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
-    
-    transition: all 0.2s ease;
-    min-height: 160px;
+    gap: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Efecto al presionar */
-.card:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* 4. Imágenes dentro de las celdas */
-.card img {
-    width: 100px !important;
-    height: 100px !important;
+.logo-escuela {
+    height: 70px;
+    width: auto;
     object-fit: contain;
-    margin-bottom: 10px;
 }
 
-/* 5. Barra de frase (Izquierda a derecha) */
+/* 3. BARRA DE FRASE (Horizontal) */
 #contenedor-frase {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: wrap;
     gap: 10px;
     background: white;
-    border: 2px solid #adb5bd;
-    border-radius: 10px;
-    min-height: 100px;
+    border: 2px solid #dee2e6;
+    border-radius: 15px;
+    min-height: 110px;
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 15px;
     width: 100%;
 }
 
@@ -71,13 +50,108 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 65px;
+    width: 70px;
+    text-align: center;
 }
 
 .item-frase img {
-    width: 50px !important;
-    height: 50px !important;
+    width: 60px !important;
+    height: 60px !important;
     object-fit: contain;
+}
+
+/* 4. TABLERO Y CELDAS (Con Marco y Sombra) */
+.grid-tablero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white !important;
+    border: 3px solid #ced4da !important; /* Marco */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important; /* Sombra */
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:active { transform: scale(0.95); }
+
+.card img {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* 5. BUSCADOR (MODAL CENTRADO) */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 10000; /* Siempre al frente */
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%); /* Centrado perfecto */
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+#resultados-busqueda {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#resultados-busqueda img {
+    width: 100%;
+    height: 80px;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* 6. BOTONES */
+.menu-config {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* AJUSTE MÓVIL */
+@media (max-width: 600px) {
+    .grid-tablero { grid-template-columns: repeat(2, 1fr); }
 }
 
 
