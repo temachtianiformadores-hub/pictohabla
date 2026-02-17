@@ -138,9 +138,31 @@ async function gestionarGrabacion(event, id) {
 }
 
 // RESPALDOS Y UTILIDADES
+// Función central para guardar y actualizar la vista
 function guardarYRefrescar() {
     localStorage.setItem('tablero_personalizado', JSON.stringify(datosPictogramas));
-    renderizarTablero();
+    renderizarTablero(); // Esto es vital para que veas el cambio al instante
+}
+
+function agregarCelda() {
+    const nuevoId = Date.now(); // Genera un ID único basado en el tiempo
+    datosPictogramas.push({ 
+        id: nuevoId, 
+        texto: "Nuevo", 
+        icono: "❓", 
+        img: "", 
+        audio: null 
+    });
+    guardarYRefrescar();
+}
+
+function quitarUltimaCelda() {
+    if (datosPictogramas.length > 0) {
+        if (confirm("¿Seguro que quieres eliminar la última celda?")) {
+            datosPictogramas.pop();
+            guardarYRefrescar();
+        }
+    }
 }
 
 function exportarTablero() {
@@ -160,3 +182,4 @@ function importarTablero(event) {
 }
 
 function limpiarFrase() { document.getElementById('contenedor-frase').innerHTML = ""; }
+
