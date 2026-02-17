@@ -22,7 +22,44 @@ body {
     width: 100%;
     box-sizing: border-box;
 }
+/* --- TAMAÑO DE LA BARRA DE FRASE --- */
+#contenedor-frase {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px;
+    padding: 10px;
+    align-items: center; /* Centra los pictogramas verticalmente */
+    min-height: 90px;
+}
 
+/* --- CONTROL DE LOS PICTOGRAMAS SELECCIONADOS --- */
+.item-frase {
+    display: flex;
+    flex-direction: column; /* Texto debajo del dibujo */
+    align-items: center;
+    justify-content: center;
+    width: 70px; /* Ancho fijo para que todos ocupen lo mismo */
+    text-align: center;
+}
+
+.item-frase img {
+    width: 60px !important;  /* Tamaño normal en la barra */
+    height: 60px !important; /* Tamaño normal en la barra */
+    object-fit: contain;     /* Evita que se deformen */
+    border-radius: 8px;      /* Esquinas suavemente redondeadas */
+    background: #f9f9f9;     /* Fondo sutil por si la imagen es transparente */
+}
+
+.item-frase span {
+    font-size: 11px;         /* Texto pequeño debajo del dibujo */
+    margin-top: 4px;
+    color: #333;
+    width: 100%;
+    overflow: hidden;        /* Corta el texto si es muy largo */
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
 /* --- TAMAÑO DE IMÁGENES EN LAS CELDAS --- */
 .card img {
     width: 100%;          /* Se ajusta al ancho de la celda */
@@ -89,5 +126,6 @@ body {
 /* OTROS ESTILOS */
 .menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
 button { border: none; border-radius: 20px; padding: 10px 15px; color: white; font-weight: bold; cursor: pointer; }
+
 
 
