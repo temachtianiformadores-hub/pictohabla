@@ -183,5 +183,10 @@ function importarTablero(event) {
 }
 
 function limpiarFrase() { document.getElementById('contenedor-frase').innerHTML = ""; }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => console.log('App lista para instalar'))
+    .catch(err => console.log('Error al registrar app', err));
+}
 
 
