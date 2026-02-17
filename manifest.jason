@@ -1,0 +1,21 @@
+{
+  "name": "PictoHabla Escuela",
+  "short_name": "PictoHabla",
+  "description": "Tablero de comunicación aumentativa",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#007bff",
+  "icons": [
+    {
+      "src": "logo-escuela.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-escuela.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
