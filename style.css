@@ -61,12 +61,38 @@ body {
     white-space: nowrap;
 }
 /* --- TAMAÑO DE IMÁGENES EN LAS CELDAS --- */
-.card img {
-    width: 100%;          /* Se ajusta al ancho de la celda */
-    max-width: 100px;     /* Pero nunca mide más de 100px */
-    height: 100px;        /* Altura fija para que todas se vean iguales */
-    object-fit: contain;  /* No se deforman */
-    margin-bottom: 5px;
+.card {
+    background-color: #ffffff !important;
+    /* EL MARCO: grosor, estilo sólido y un gris suave */
+    border: 2px solid #d1d8e0 !important; 
+    /* EL SOMBREADO: desplazamiento X, desplazamiento Y, desenfoque y color con transparencia */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    /* Animación suave para cuando pases el mouse o toques */
+    transition: all 0.3s ease;
+}
+
+/* EFECTO AL TOCAR: La sombra se hace más profunda y la celda sube un poco */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    border-color: #a5b1c2 !important;
+}
+
+/* EFECTO DE CLIC: Se hunde un poco para dar sensación de botón real */
+.card:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
 }
 
 /* --- CORRECCIÓN DEL BUSCADOR (MODAL) --- */
@@ -126,6 +152,7 @@ body {
 /* OTROS ESTILOS */
 .menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
 button { border: none; border-radius: 20px; padding: 10px 15px; color: white; font-weight: bold; cursor: pointer; }
+
 
 
 
