@@ -214,6 +214,23 @@ if ('serviceWorker' in navigator) {
     .then(reg => console.log('App lista para instalar'))
     .catch(err => console.log('Error al registrar app', err));
 }
+function reiniciarTablero() {
+    // Confirmación para evitar borrados accidentales
+    if (confirm("¿Estás seguro de que quieres borrar la frase actual y limpiar el tablero?")) {
+        
+        // 1. Limpiar la barra de frase superior
+        const contenedorFrase = document.getElementById('contenedor-frase');
+        if (contenedorFrase) {
+            contenedorFrase.innerHTML = "";
+        }
+
+        // 2. Si quieres que el tablero vuelva a su estado inicial (vacío de fábrica):
+        // localStorage.clear(); // Descomenta esta línea solo si quieres borrar TODO el progreso
+        // location.reload();    // Descomenta esta línea solo si quieres borrar TODO el progreso
+
+        console.log("Tablero reiniciado");
+    }
+}
 
 
 
