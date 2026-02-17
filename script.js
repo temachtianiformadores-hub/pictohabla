@@ -116,25 +116,51 @@ function cargarImagenLocal(event) {
 async function gestionarGrabacion(event, id) {
     event.stopPropagation();
     idSeleccionado = id;
+    const boton = event.target;
+
+    // Verificar si ya estamos grabando
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        chunks = [];
-        mediaRecorder.ondataavailable = e => chunks.push(e.data);
-        mediaRecorder.onstop = () => {
-            const reader = new FileReader();
-            reader.readAsDataURL(new Blob(chunks));
-            reader.onloadend = () => {
-                datosPictogramas.find(p => p.id === idSeleccionado).audio = reader.result;
-                guardarYRefrescar();
-                alert("Audio guardado");
+        try {
+            // Pedir permiso explícito al usuario
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            
+            mediaRecorder = new MediaRecorder(stream);
+            chunks = [];
+
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) chunks.push(e.data);
             };
-        };
-        mediaRecorder.start();
-        event.target.innerText = "🛑";
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = () => {
+                    const base64Audio = reader.result;
+                    // Guardar en el array
+                    const picto = datosPictogramas.find(p => p.id === idSeleccionado);
+                    if (picto) {
+                        picto.audio = base64Audio;
+                        guardarYRefrescar();
+                        alert("✅ ¡Audio grabado con éxito!");
+                    }
+                };
+                // Detener el uso del micrófono físicamente
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            boton.innerText = "🛑";
+            boton.style.backgroundColor = "#ff4444"; // Se pone rojo mientras graba
+        } catch (err) {
+            console.error("Error al acceder al micro:", err);
+            alert("❌ No se pudo acceder al micrófono. Asegúrate de dar permisos en el navegador.");
+        }
     } else {
+        // Detener la grabación
         mediaRecorder.stop();
-        event.target.innerText = "🎤";
+        boton.innerText = "🎤";
+        boton.style.backgroundColor = "#eee";
     }
 }
 
@@ -188,5 +214,6 @@ if ('serviceWorker' in navigator) {
     .then(reg => console.log('App lista para instalar'))
     .catch(err => console.log('Error al registrar app', err));
 }
+
 
 
