@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablero de Comunicación</title>
+    <title>PictoHabla Escuela</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <header class="encabezado-escuela">
-    <img src="logo_nemi_e.jpg" alt="Logo Escuela" class="logo-escuela">
-    <div>
-        <h1>Mi PictoHabla</h1>
-        <p class="nombre-escuela">Nemi Comunidad de Aprendizaje</p>
-    </div>
-</header>
-    
-    <div id="barra-frase" class="barra-frase">
-        <p>Frase: </p>
-        <div id="contenedor-frase"></div>
-        <button onclick="limpiarFrase()">Borrar</button>
-    </div>
-<div class="menu-config">
-    <button onclick="exportarTablero()" style="background:#28a745; color:white;">💾 Guardar Respaldo</button>
-    <label class="btn-config" style="background:#007bff;">
-        📂 Cargar Respaldo 
-        <input type="file" id="importar-archivo" hidden onchange="importarTablero(event)">
-    </label>
 
-    <button onclick="agregarCelda()" style="background:#6f42c1; color:white;">➕ Añadir Celda</button>
-    <button onclick="quitarUltimaCelda()" style="background:#dc3545; color:white;">➖ Quitar Celda</button>
-</div>
+    <header class="encabezado-escuela">
+        <img src="logo-escuela.png" alt="Logo" class="logo-escuela" onerror="this.style.display='none'">
+        <div>
+            <h1>Mi Tablero de Comunicación</h1>
+            <p class="nombre-escuela">Panel Personalizado</p>
+        </div>
+    </header>
 
-<div id="modal-buscador" class="modal">
-    <div class="modal-content">
-        <h2 style="color: #555;">🔍 Buscar Imagen</h2>
-        <input type="text" id="input-busqueda" placeholder="Escribe aquí...">
-        <br>
-        <button class="btn-buscar-modal" onclick="buscarEnArasaac()">Buscar en ARASAAC</button>
-        
-        <button onclick="document.getElementById('subir-imagen-local').click()" style="background:#6c757d; color:white; margin-top:10px;">
-            📁 Subir imagen propia
-        </button>
-        
-        <div id="resultados-busqueda"></div>
-        
-        <button class="btn-cerrar-modal" onclick="cerrarBuscador()">Cerrar</button>
+    <div class="contenedor-principal">
+        <div class="seccion-frase">
+            <div id="contenedor-frase"></div>
+            <button onclick="limpiarFrase()" class="btn-borrar">Borrar Todo</button>
+        </div>
+
+        <div class="menu-config">
+            <button onclick="exportarTablero()" style="background:#28a745;">💾 Guardar Respaldo</button>
+            <label class="btn-config" style="background:#007bff;">
+                📂 Cargar Respaldo 
+                <input type="file" id="importar-archivo" hidden onchange="importarTablero(event)">
+            </label>
+            <button onclick="agregarCelda()" style="background:#6f42c1;">➕ Añadir Celda</button>
+            <button onclick="quitarUltimaCelda()" style="background:#dc3545;">➖ Quitar Celda</button>
+        </div>
+
+        <div id="grid-tablero" class="grid-tablero"></div>
     </div>
-</div>
 
-<input type="file" id="subir-imagen-local" hidden accept="image/*" onchange="cargarImagenLocal(event)">
-</div>
-</div>
+    <div id="modal-buscador" class="modal">
+        <div class="modal-content">
+            <h2>🔍 Editar Pictograma</h2>
+            <input type="text" id="input-busqueda" placeholder="Buscar en ARASAAC...">
+            <div class="grupo-botones-modal">
+                <button class="btn-buscar-modal" onclick="buscarEnArasaac()">Buscar ARASAAC</button>
+                <button onclick="document.getElementById('subir-imagen-local').click()" style="background:#6c757d; color:white;">📁 Imagen Local</button>
+            </div>
+            
+            <div id="resultados-busqueda"></div>
+            
+            <button class="btn-cerrar-modal" onclick="cerrarBuscador()">Cerrar</button>
+        </div>
+    </div>
+
+    <input type="file" id="subir-imagen-local" hidden accept="image/*" onchange="cargarImagenLocal(event)">
+
+    <script src="script.js"></script>
 </body>
-
 </html>
 
 
