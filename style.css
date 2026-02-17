@@ -148,11 +148,29 @@ button {
     font-weight: bold;
     cursor: pointer;
 }
+/* Esto iguala el diseño de la etiqueta al de los botones */
+.boton-archivo {
+    display: inline-block;    /* Permite que tenga tamaño de botón */
+    background-color: #007bff; /* Color azul (puedes cambiarlo) */
+    color: white;
+    padding: 10px 15px;       /* Mismo espacio interno que los otros */
+    border-radius: 20px;      /* Misma redondez */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+    font-size: 14px;          /* Ajusta para que coincida con los demás */
+    line-height: normal;      /* Alinea el texto al centro */
+}
 
+.boton-archivo:hover {
+    background-color: #0056b3; /* Efecto al pasar el mouse */
+}
 /* AJUSTE MÓVIL */
 @media (max-width: 600px) {
     .grid-tablero { grid-template-columns: repeat(2, 1fr); }
 }
+
 
 
 
