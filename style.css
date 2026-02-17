@@ -236,3 +236,51 @@ button:hover {
     background-color: #b3d9ff; /* Azul pastel */
     color: #003366;
 }
+/* Barra de frase: de izquierda a derecha */
+#contenedor-frase {
+    display: flex;
+    flex-direction: row; /* Alineación horizontal */
+    flex-wrap: wrap;    /* Si no caben, bajan a la siguiente línea */
+    gap: 10px;
+    min-height: 80px;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+    border: 2px dashed #ccc;
+}
+
+/* Celdas Neutras */
+.card {
+    background-color: #ffffff !important; /* Blanco para todas */
+    border: 2px solid #ddd !important;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.card:hover {
+    border-color: #aaa;
+    background-color: #f9f9f9 !important;
+}
+
+/* Estilo para los botones de configuración */
+.menu-config {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-config {
+    background: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
