@@ -166,6 +166,20 @@ button {
 .boton-archivo:hover {
     background-color: #0056b3; /* Efecto al pasar el mouse */
 }
+.btn-borrar-frase {
+    background-color: #f44336;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 /* AJUSTE MÓVIL */
 @media (max-width: 600px) {
     .grid-tablero { grid-template-columns: repeat(2, 1fr); }
@@ -182,6 +196,7 @@ html, body {
     height: 100%;
     overscroll-behavior: none; /* Evita el efecto de rebote al deslizar hacia arriba */
 }
+
 
 
 
