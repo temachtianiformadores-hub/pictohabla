@@ -1,3 +1,4 @@
+/* RESET GENERAL */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #f4f7f6;
@@ -5,128 +6,67 @@ body {
     padding: 20px;
 }
 
-.encabezado-escuela {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.logo-escuela { height: 60px; }
-
-/* BARRA DE FRASE (Izquierda a Derecha) */
-.seccion-frase {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
-}
-
+/* BARRA DE FRASE (FORZAR IZQUIERDA A DERECHA) */
 #contenedor-frase {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row; /* Horizontal */
-    flex-wrap: wrap;
-    gap: 10px;
-    min-height: 80px;
+    display: flex !important;
+    flex-direction: row !important; /* Dirección horizontal */
+    flex-wrap: wrap !important;   /* Si se llena, salta a la siguiente línea */
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 15px;
+    min-height: 100px;
     background: white;
     border: 2px solid #ddd;
     border-radius: 12px;
-    padding: 10px;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* CELDAS NEUTRAS (FORZAR BLANCO) */
+.card {
+    background-color: #ffffff !important; /* Quita cualquier color previo */
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Iconos y fotos dentro de la frase */
 .item-frase {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 12px;
-    width: 60px;
+    width: 70px;
+    animation: aparecer 0.3s ease;
 }
 
-.item-frase img { width: 40px; height: 40px; }
+.item-frase img, .item-frase span {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    font-size: 40px;
+}
 
-/* GRID Y CELDAS NEUTRAS */
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* REJILLA */
 .grid-tablero {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 15px;
+    margin-top: 20px;
 }
 
-.card {
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 15px;
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.1s;
-}
+/* OTROS ESTILOS */
+.menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+button { border: none; border-radius: 20px; padding: 10px 15px; color: white; font-weight: bold; cursor: pointer; }
 
-.card:active { transform: scale(0.95); }
-
-.card img { width: 80px; height: 80px; object-fit: contain; }
-
-.controles-celda {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-/* MENÚ CONFIGURACIÓN */
-.menu-config {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-button {
-    border: none;
-    border-radius: 20px;
-    padding: 10px 15px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background: white;
-    margin: 10% auto;
-    padding: 20px;
-    width: 90%;
-    max-width: 450px;
-    border-radius: 20px;
-    text-align: center;
-}
-
-#resultados-busqueda {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 15px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-/* MÓVIL */
-@media (max-width: 600px) {
-    .grid-tablero { grid-template-columns: repeat(2, 1fr); }
-}
