@@ -170,6 +170,18 @@ button {
 @media (max-width: 600px) {
     .grid-tablero { grid-template-columns: repeat(2, 1fr); }
 }
+/* Evita que el usuario seleccione texto o le salga el menú azul al dejar presionado */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+/* Hace que el tablero ocupe toda la pantalla sin barras blancas */
+html, body {
+    height: 100%;
+    overscroll-behavior: none; /* Evita el efecto de rebote al deslizar hacia arriba */
+}
 
 
 
