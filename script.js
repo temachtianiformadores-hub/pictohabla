@@ -70,13 +70,14 @@ function quitarUltimaCelda() {
 
 // IMÁGENES Y ARASAAC
 function abrirBuscador(event, id) {
-    event.stopPropagation();
+    if (event) event.stopPropagation(); // Evita que se active la celda al dar clic al lápiz
     idSeleccionado = id;
     document.getElementById('modal-buscador').style.display = 'block';
 }
 
-function cerrarBuscador() { document.getElementById('modal-buscador').style.display = 'none'; }
-
+function cerrarBuscador() {
+    document.getElementById('modal-buscador').style.display = 'none';
+}
 async function buscarEnArasaac() {
     const query = document.getElementById('input-busqueda').value;
     const res = await fetch(`https://api.arasaac.org/api/pictograms/es/search/${query}`);
@@ -182,4 +183,5 @@ function importarTablero(event) {
 }
 
 function limpiarFrase() { document.getElementById('contenedor-frase').innerHTML = ""; }
+
 
