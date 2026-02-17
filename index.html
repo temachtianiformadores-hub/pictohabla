@@ -36,25 +36,27 @@
     </div>
 
     <div id="modal-buscador" class="modal">
-        <div class="modal-content">
-            <h2>🔍 Editar Pictograma</h2>
-            <input type="text" id="input-busqueda" placeholder="Buscar en ARASAAC...">
-            <div class="grupo-botones-modal">
-                <button class="btn-buscar-modal" onclick="buscarEnArasaac()">Buscar ARASAAC</button>
-                <button onclick="document.getElementById('subir-imagen-local').click()" style="background:#6c757d; color:white;">📁 Imagen Local</button>
-            </div>
-            
-            <div id="resultados-busqueda"></div>
-            
-            <button class="btn-cerrar-modal" onclick="cerrarBuscador()">Cerrar</button>
+    <div class="modal-content">
+        <h2>🔍 Editar Celda</h2>
+        <input type="text" id="input-busqueda" placeholder="Buscar en ARASAAC...">
+        
+        <div style="margin-top: 10px;">
+            <button onclick="buscarEnArasaac()" style="background:#007bff;">Buscar</button>
+            <button onclick="document.getElementById('subir-imagen-local').click()" style="background:#6c757d;">Subir Foto</button>
         </div>
+
+        <div id="resultados-busqueda"></div>
+
+        <button onclick="cerrarBuscador()" style="background:#dc3545; margin-top:15px;">Cerrar</button>
     </div>
+</div>
 
     <input type="file" id="subir-imagen-local" hidden accept="image/*" onchange="cargarImagenLocal(event)">
 
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
