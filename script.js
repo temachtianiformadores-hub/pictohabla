@@ -185,4 +185,28 @@ function importarTablero(event) {
     };
     lector.readAsText(archivo);
 }
+function cargarImagenLocal(event) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+    lector.onload = function(e) {
+        const urlBase64 = e.target.result;
+        // idSeleccionado es la celda que tocamos antes de abrir el buscador
+        const picto = datosPictogramas.find(item => item.id === idSeleccionado);
+        
+        if (picto) {
+            picto.img = urlBase64; // Guarda la imagen como texto en la memoria
+            picto.icono = "";
+            const nombre = prompt("¿Qué nombre le ponemos a este pictograma?");
+            picto.texto = nombre || "Imagen";
+            
+            // Guardar cambios y refrescar
+            localStorage.setItem('tablero_personalizado', JSON.stringify(datosPictogramas));
+            renderizarTablero();
+            cerrarBuscador();
+        }
+    };
+    lector.readAsDataURL(archivo);
+}
 
