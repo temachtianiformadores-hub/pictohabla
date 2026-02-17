@@ -1,158 +1,84 @@
-/* RESET GENERAL */
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f4f7f6;
+/* 1. Limpieza total de márgenes */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #f0f2f5;
     padding: 20px;
 }
 
-/* BARRA DE FRASE (FORZAR IZQUIERDA A DERECHA) */
-#contenedor-frase {
-    display: flex !important;
-    flex-direction: row !important; /* Dirección horizontal */
-    flex-wrap: wrap !important;   /* Si se llena, salta a la siguiente línea */
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    gap: 15px;
-    min-height: 100px;
-    background: white;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    padding: 15px;
-    width: 100%;
-    box-sizing: border-box;
-}
-/* --- TAMAÑO DE LA BARRA DE FRASE --- */
-#contenedor-frase {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 10px;
-    padding: 10px;
-    align-items: center; /* Centra los pictogramas verticalmente */
-    min-height: 90px;
+/* 2. Rejilla del tablero */
+.grid-tablero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
 
-/* --- CONTROL DE LOS PICTOGRAMAS SELECCIONADOS --- */
-.item-frase {
-    display: flex;
-    flex-direction: column; /* Texto debajo del dibujo */
-    align-items: center;
-    justify-content: center;
-    width: 70px; /* Ancho fijo para que todos ocupen lo mismo */
-    text-align: center;
-}
-
-.item-frase img {
-    width: 60px !important;  /* Tamaño normal en la barra */
-    height: 60px !important; /* Tamaño normal en la barra */
-    object-fit: contain;     /* Evita que se deformen */
-    border-radius: 8px;      /* Esquinas suavemente redondeadas */
-    background: #f9f9f9;     /* Fondo sutil por si la imagen es transparente */
-}
-
-.item-frase span {
-    font-size: 11px;         /* Texto pequeño debajo del dibujo */
-    margin-top: 4px;
-    color: #333;
-    width: 100%;
-    overflow: hidden;        /* Corta el texto si es muy largo */
-    text-overflow: ellipsis; 
-    white-space: nowrap;
-}
-/* --- TAMAÑO DE IMÁGENES EN LAS CELDAS --- */
+/* 3. LAS CELDAS (Aquí está el marco y la sombra) */
 .card {
-    background-color: #ffffff !important;
-    /* EL MARCO: grosor, estilo sólido y un gris suave */
-    border: 2px solid #d1d8e0 !important; 
-    /* EL SOMBREADO: desplazamiento X, desplazamiento Y, desenfoque y color con transparencia */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-    
-    border-radius: 15px;
+    background: #ffffff !important;
+    border: 3px solid #ced4da !important; /* Marco grueso y visible */
+    border-radius: 15px !important;
     padding: 15px;
-    text-align: center;
-    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     
-    /* Animación suave para cuando pases el mouse o toques */
-    transition: all 0.3s ease;
+    /* SOMBRA MUY MARCADA PARA QUE LA NOTES */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+    
+    transition: all 0.2s ease;
+    min-height: 160px;
 }
 
-/* EFECTO AL TOCAR: La sombra se hace más profunda y la celda sube un poco */
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
-    border-color: #a5b1c2 !important;
-}
-
-/* EFECTO DE CLIC: Se hunde un poco para dar sensación de botón real */
+/* Efecto al presionar */
 .card:active {
-    transform: translateY(1px);
+    transform: scale(0.95);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
-}
 
-/* --- CORRECCIÓN DEL BUSCADOR (MODAL) --- */
-.modal {
-    display: none; 
-    position: fixed;      /* Se queda fijo en la pantalla */
-    z-index: 9999;        /* Se pone por encima de TODO */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.6); /* Fondo oscuro */
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: white;
-    position: absolute;   /* Posición absoluta respecto al fondo negro */
-    top: 50%;             /* Centrado vertical */
-    left: 50%;            /* Centrado horizontal */
-    transform: translate(-50%, -50%); /* Ajuste perfecto al centro */
-    padding: 25px;
-    width: 90%;
-    max-width: 450px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-/* Rejilla de resultados dentro del buscador */
-#resultados-busqueda {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas de fotos */
-    gap: 10px;
-    margin-top: 15px;
-    max-height: 250px;    /* Si hay muchos resultados, sale barra de scroll */
-    overflow-y: auto;
-    padding: 5px;
-}
-
-#resultados-busqueda img {
-    width: 100%;
-    height: 80px;
+/* 4. Imágenes dentro de las celdas */
+.card img {
+    width: 100px !important;
+    height: 100px !important;
     object-fit: contain;
-    border: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+/* 5. Barra de frase (Izquierda a derecha) */
+#contenedor-frase {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: white;
+    border: 2px solid #adb5bd;
     border-radius: 10px;
-    cursor: pointer;
+    min-height: 100px;
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 100%;
 }
 
-/* REJILLA */
-.grid-tablero {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+.item-frase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 65px;
 }
 
-/* OTROS ESTILOS */
-.menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
-button { border: none; border-radius: 20px; padding: 10px 15px; color: white; font-weight: bold; cursor: pointer; }
-
+.item-frase img {
+    width: 50px !important;
+    height: 50px !important;
+    object-fit: contain;
+}
 
 
 
