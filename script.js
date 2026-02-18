@@ -26,14 +26,14 @@ function renderizarTablero() {
         
         const visual = picto.img ? `<img src="${picto.img}">` : `<div style="font-size:40px">${picto.icono}</div>`;
         //Prueba de boton dentro de las celda , quitar si no funciona el ejemplo
-        //div.innerHTML = 
-        //    ${visual}
-       //     <div>${picto.texto}</div>
-        //    <div class="controles-celda">
-        //        <button style="background:#eee; color:black; padding:5px" onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
-        //        <button style="background:#eee; color:black; padding:5px" onclick="abrirBuscador(event, ${picto.id})">✏️</button>
-        //    </div>
-        //`;
+        div.innerHTML = 
+           ${visual}
+           <div>${picto.texto}</div>
+           <div class="controles-celda">
+               <button style="background:#eee; color:black; padding:5px" onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
+               <button style="background:#eee; color:black; padding:5px" onclick="abrirBuscador(event, ${picto.id})">✏️</button>
+           </div>
+    `;
         // Ejemplo de cómo se vería el botón dentro del generador de celdas:
 const htmlCelda = `
     <div class="card" onclick="seleccionarPictograma(...)">
@@ -262,6 +262,7 @@ function limpiarContenidoCelda(event, id) {
         }
     }
 }
+
 
 
 
