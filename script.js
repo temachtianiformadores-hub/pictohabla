@@ -37,7 +37,7 @@ function renderizarTablero() {
 function añadirCelda() {
     const nuevaCelda = {
         id: Date.now(),
-        texto: "Nuevo",
+        texto: "Nuevo Picto",
         img: "logo_nemi_e.jpg",
         audio: null
     };
@@ -245,6 +245,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
