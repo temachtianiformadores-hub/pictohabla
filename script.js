@@ -258,9 +258,6 @@ function subirImagenLocal(event) {
     reader.readAsDataURL(archivo);
 }
 // 6. AUDIO Y GRABACIÓN (Versión Optimizada)
-let mediaRecorder;
-let chunks = [];
-
 async function gestionarGrabacion(event) {
     // Usamos el idSeleccionado que definimos al abrir el modal
     if (!idSeleccionado) return alert("Primero selecciona una celda");
@@ -340,6 +337,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
