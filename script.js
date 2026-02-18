@@ -225,12 +225,13 @@ function reiniciarTablero() {
         }
 
         // 2. Si quieres que el tablero vuelva a su estado inicial (vacío de fábrica):
-        // localStorage.clear(); // Descomenta esta línea solo si quieres borrar TODO el progreso
+        localStorage.clear(); // Descomenta esta línea solo si quieres borrar TODO el progreso
         // location.reload();    // Descomenta esta línea solo si quieres borrar TODO el progreso
 
         console.log("Tablero reiniciado");
     }
 }
+
 
 
 
