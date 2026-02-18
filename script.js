@@ -25,15 +25,27 @@ function renderizarTablero() {
         div.onclick = () => seleccionarPictograma(picto);
         
         const visual = picto.img ? `<img src="${picto.img}">` : `<div style="font-size:40px">${picto.icono}</div>`;
-        
-        div.innerHTML = `
-            ${visual}
-            <div>${picto.texto}</div>
-            <div class="controles-celda">
-                <button style="background:#eee; color:black; padding:5px" onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
-                <button style="background:#eee; color:black; padding:5px" onclick="abrirBuscador(event, ${picto.id})">✏️</button>
-            </div>
-        `;
+        //Prueba de boton dentro de las celda , quitar si no funciona el ejemplo
+        //div.innerHTML = 
+        //    ${visual}
+       //     <div>${picto.texto}</div>
+        //    <div class="controles-celda">
+        //        <button style="background:#eee; color:black; padding:5px" onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
+        //        <button style="background:#eee; color:black; padding:5px" onclick="abrirBuscador(event, ${picto.id})">✏️</button>
+        //    </div>
+        //`;
+        // Ejemplo de cómo se vería el botón dentro del generador de celdas:
+const htmlCelda = `
+    <div class="card" onclick="seleccionarPictograma(...)">
+        <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, ${picto.id})">🗑️</button>
+        <img src="${picto.img || 'default.png'}">
+        <p>${picto.texto}</p>
+        <div class="controles-celda">
+            <button onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
+            <button onclick="abrirBuscador(event, ${picto.id})">✏️</button>
+        </div>
+    </div>
+`;
         grid.appendChild(div);
     });
 }
@@ -226,9 +238,28 @@ function reiniciarTablero() {
 
         // 2. Si quieres que el tablero vuelva a su estado inicial (vacío de fábrica):
         localStorage.clear(); // Descomenta esta línea solo si quieres borrar TODO el progreso
-        // location.reload();    // Descomenta esta línea solo si quieres borrar TODO el progreso
+        location.reload();    // Descomenta esta línea solo si quieres borrar TODO el progreso
 
         console.log("Tablero reiniciado");
+    }
+}
+function limpiarContenidoCelda(event, id) {
+    event.stopPropagation(); // Evita que la celda se seleccione al intentar borrarla
+    
+    if (confirm("¿Quieres borrar todo el contenido de esta celda (imagen, nombre y audio)?")) {
+        const indice = datosPictogramas.findIndex(p => p.id === id);
+        
+        if (indice !== -1) {
+            // Devolvemos la celda a su estado inicial/vacío
+            datosPictogramas[indice].texto = "Nuevo";
+            datosPictogramas[indice].img = ""; 
+            datosPictogramas[indice].audio = null; // Borra el audio grabado
+            datosPictogramas[indice].icono = "❓"; // Icono por defecto
+            
+            // Guardamos los cambios y redibujamos el tablero
+            guardarYRefrescar();
+            console.log("Celda " + id + " reseteada correctamente.");
+        }
     }
 }
 
