@@ -64,15 +64,56 @@ function seleccionarPictograma(picto) {
     const contenedorFrase = document.getElementById('contenedor-frase');
     const item = document.createElement('div');
     item.className = 'item-frase';
+    
+    // --- ESTO ES LO NUEVO: Guardamos los datos para la reproducción completa ---
+    item.setAttribute('data-texto', picto.texto);
+    // Si no hay audio grabado, guardamos "null" como texto para identificarlo
+    item.setAttribute('data-audio', picto.audio || "null");
+
     item.innerHTML = `<img src="${picto.img}"><span>${picto.texto}</span>`;
     contenedorFrase.appendChild(item);
 
+    // Reproducción individual inmediata (lo que ya tenías)
     if (picto.audio) {
         new Audio(picto.audio).play();
     } else {
         const msg = new SpeechSynthesisUtterance(picto.texto);
         msg.lang = 'es-ES';
         window.speechSynthesis.speak(msg);
+    }
+}
+async function reproducirFraseCompleta() {
+    const contenedor = document.getElementById('contenedor-frase');
+    const items = contenedor.querySelectorAll('.item-frase');
+    
+    if (items.length === 0) return;
+
+    // Detenemos cualquier voz que esté hablando
+    window.speechSynthesis.cancel();
+
+    // Leemos cada pictograma en orden
+    for (let item of items) {
+        const texto = item.getAttribute('data-texto');
+        const audioUrl = item.getAttribute('data-audio');
+
+        // Si el audio no es "null", reproducimos la grabación
+        if (audioUrl && audioUrl !== "null") {
+            await new Promise(resolve => {
+                const audio = new Audio(audioUrl);
+                audio.onended = resolve;
+                audio.onerror = resolve; // Por si hay error, que siga con la siguiente
+                audio.play();
+            });
+        } else {
+            // Si no hay grabación, usamos la voz del sistema
+            await new Promise(resolve => {
+                const msg = new SpeechSynthesisUtterance(texto);
+                msg.lang = 'es-ES';
+                msg.onend = resolve;
+                msg.onerror = resolve;
+                window.speechSynthesis.speak(msg);
+            });
+        }
     }
 }
 
@@ -253,6 +294,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
