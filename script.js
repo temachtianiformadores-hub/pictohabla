@@ -187,6 +187,24 @@ function seleccionarImagenBusqueda(urlImagen, textoImagen) {
         console.error("No se encontró el ID de la celda seleccionada.");
     }
 }
+// Función para procesar la imagen que subes desde tu dispositivo
+function subirImagenLocal(event) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const urlImagenLocal = e.target.result; // Esta es la imagen en formato base64
+        
+        // Usamos la misma lógica para guardar en la celda seleccionada
+        const nombreImagen = prompt("Escribe el nombre para esta imagen:", "Nuevo");
+        
+        if (nombreImagen) {
+            seleccionarImagenBusqueda(urlImagenLocal, nombreImagen);
+        }
+    };
+    reader.readAsDataURL(archivo);
+}
 // 6. AUDIO Y LIMPIEZA
 async function gestionarGrabacion(event, id) {
     event.stopPropagation();
@@ -235,6 +253,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
