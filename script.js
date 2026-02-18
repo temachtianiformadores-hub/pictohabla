@@ -86,37 +86,48 @@ async function reproducirFraseCompleta() {
     const contenedor = document.getElementById('contenedor-frase');
     const items = contenedor.querySelectorAll('.item-frase');
     
-    if (items.length === 0) return;
+    if (items.length === 0) {
+        console.warn("No hay elementos en la frase para reproducir.");
+        return;
+    }
 
-    // Detenemos cualquier voz que esté hablando
+    // IMPORTANTE: Cancelar cualquier voz previa y resetear el motor de audio
     window.speechSynthesis.cancel();
+    console.log("Iniciando reproducción de frase...");
 
-    // Leemos cada pictograma en orden
     for (let item of items) {
         const texto = item.getAttribute('data-texto');
         const audioUrl = item.getAttribute('data-audio');
 
-        // Si el audio no es "null", reproducimos la grabación
-        if (audioUrl && audioUrl !== "null") {
-            await new Promise(resolve => {
-                const audio = new Audio(audioUrl);
-                audio.onended = resolve;
-                audio.onerror = resolve; // Por si hay error, que siga con la siguiente
-                audio.play();
-            });
-        } else {
-            // Si no hay grabación, usamos la voz del sistema
-            await new Promise(resolve => {
-                const msg = new SpeechSynthesisUtterance(texto);
-                msg.lang = 'es-ES';
-                msg.onend = resolve;
-                msg.onerror = resolve;
-                window.speechSynthesis.speak(msg);
-            });
+        console.log("Reproduciendo:", texto);
+
+        try {
+            if (audioUrl && audioUrl !== "null" && audioUrl !== "") {
+                // Reproducir grabación de voz
+                await new Promise((resolve, reject) => {
+                    const audio = new Audio(audioUrl);
+                    audio.onended = resolve;
+                    audio.onerror = resolve; // Si falla un audio, pasar al siguiente
+                    audio.play().catch(e => {
+                        console.error("Error al reproducir audio:", e);
+                        resolve(); 
+                    });
+                });
+            } else if (texto) {
+                // Reproducir voz sintética
+                await new Promise((resolve) => {
+                    const msg = new SpeechSynthesisUtterance(texto);
+                    msg.lang = 'es-ES';
+                    msg.onend = resolve;
+                    msg.onerror = resolve;
+                    window.speechSynthesis.speak(msg);
+                });
+            }
+        } catch (error) {
+            console.error("Error en la secuencia de frase:", error);
         }
     }
 }
-
 function borrarFrase() {
     document.getElementById('contenedor-frase').innerHTML = '';
 }
@@ -294,6 +305,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
