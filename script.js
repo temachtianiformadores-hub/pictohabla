@@ -1,261 +1,161 @@
-let datosPictogramas = [
-    { id: 1, texto: "Yo", icono: "👤", img: "", audio: null },
-    { id: 2, texto: "Tú", icono: "👥", img: "", audio: null },
-    { id: 3, texto: "Quiero", icono: "✅", img: "", audio: null },
-    { id: 4, texto: "Comer", icono: "🍎", img: "", audio: null }
+// 1. VARIABLES GLOBALES Y DATOS INICIALES
+let datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
+    { id: 1, texto: "Yo", img: "https://via.placeholder.com/100", audio: null },
+    { id: 2, texto: "Tú", img: "https://via.placeholder.com/100", audio: null },
+    { id: 3, texto: "Quiero", img: "https://via.placeholder.com/100", audio: null },
+    { id: 4, texto: "Comer", img: "https://via.placeholder.com/100", audio: null }
 ];
 
+let idSeleccionado = null;
 let mediaRecorder;
 let chunks = [];
-let idSeleccionado = null;
 
-// CARGAR AL INICIAR
-window.onload = () => {
-    const guardado = localStorage.getItem('tablero_personalizado');
-    if (guardado) datosPictogramas = JSON.parse(guardado);
-    renderizarTablero();
-};
-
+// 2. RENDERIZAR EL TABLERO (Dibuja las celdas)
 function renderizarTablero() {
-    const grid = document.getElementById('grid-tablero');
-    grid.innerHTML = "";
+    const contenedor = document.getElementById('grid-tablero');
+    if (!contenedor) return;
+    contenedor.innerHTML = '';
+
     datosPictogramas.forEach(picto => {
-        const div = document.createElement('div');
-        div.className = "card";
-        div.onclick = () => seleccionarPictograma(picto);
-        
-        const visual = picto.img ? `<img src="${picto.img}">` : `<div style="font-size:40px">${picto.icono}</div>`;
-        <div class="card" onclick="seleccionarPictograma(...)">
-        <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, ${picto.id})">🗑️</button>
-        <img src="${picto.img || 'default.png'}">
-        <p>${picto.texto}</p>
-        div.innerHTML = 
-           ${visual}
-           <div>${picto.texto}</div>
-           <div class="controles-celda">
-               <button style="background:#eee; color:black; padding:5px" onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
-               <button style="background:#eee; color:black; padding:5px" onclick="abrirBuscador(event, ${picto.id})">✏️</button>
-           </div>
-    `;
-       
-        grid.appendChild(div);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => seleccionarPictograma(picto);
+
+        card.innerHTML = `
+            <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, ${picto.id})">🗑️</button>
+            
+            <img src="${picto.img}" alt="${picto.texto}">
+            <p>${picto.texto}</p>
+            
+            <div class="controles-celda">
+                <button onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
+                <button onclick="abrirBuscador(event, ${picto.id})">✏️</button>
+            </div>
+        `;
+        contenedor.appendChild(card);
     });
 }
 
+// 3. FUNCIONES DE INTERACCIÓN
 function seleccionarPictograma(picto) {
-    if (picto.audio) {
-        new Audio(picto.audio).play();
-    } else {
-        const msj = new SpeechSynthesisUtterance(picto.texto);
-        msj.lang = 'es-ES';
-        window.speechSynthesis.speak(msj);
-    }
-
-    const contenedor = document.getElementById('contenedor-frase');
+    const contenedorFrase = document.getElementById('contenedor-frase');
+    
+    // Crear el elemento en la barra superior
     const item = document.createElement('div');
-    item.className = "item-frase";
-    item.innerHTML = `${picto.img ? `<img src="${picto.img}">` : picto.icono} <span>${picto.texto}</span>`;
-    contenedor.appendChild(item);
-}
+    item.className = 'item-frase';
+    item.innerHTML = `
+        <img src="${picto.img}">
+        <span>${picto.texto}</span>
+    `;
+    contenedorFrase.appendChild(item);
 
-// GESTIÓN DE CELDAS
-function agregarCelda() {
-    const nuevoId = Date.now();
-    datosPictogramas.push({ id: nuevoId, texto: "Nuevo", icono: "❓", img: "", audio: null });
-    guardarYRefrescar();
-}
-
-function quitarUltimaCelda() {
-    if (confirm("¿Quitar última celda?")) {
-        datosPictogramas.pop();
-        guardarYRefrescar();
+    // Reproducir audio si existe
+    if (picto.audio) {
+        const audio = new Audio(picto.audio);
+        audio.play();
+    } else {
+        // Voz sintética si no hay grabación
+        const enunciado = new SpeechSynthesisUtterance(picto.texto);
+        enunciado.lang = 'es-ES';
+        window.speechSynthesis.speak(enunciado);
     }
 }
 
-// IMÁGENES Y ARASAAC
-function abrirBuscador(event, id) {
-    if (event) event.stopPropagation(); // Evita que se active la celda al dar clic al lápiz
-    idSeleccionado = id;
-    document.getElementById('modal-buscador').style.display = 'block';
+function borrarFrase() {
+    document.getElementById('contenedor-frase').innerHTML = '';
+    window.speechSynthesis.cancel();
 }
 
-function cerrarBuscador() {
-    document.getElementById('modal-buscador').style.display = 'none';
-}
-async function buscarEnArasaac() {
-    const query = document.getElementById('input-busqueda').value;
-    const res = await fetch(`https://api.arasaac.org/api/pictograms/es/search/${query}`);
-    const datos = await res.json();
-    const contenedor = document.getElementById('resultados-busqueda');
-    contenedor.innerHTML = "";
-    datos.forEach(p => {
-        const url = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_300.png`;
-        const img = document.createElement('img');
-        img.src = url;
-        img.style.width = "80px";
-        img.onclick = () => {
-            const picto = datosPictogramas.find(item => item.id === idSeleccionado);
-            picto.img = url;
-            picto.texto = query;
-            guardarYRefrescar();
-            cerrarBuscador();
-        };
-        contenedor.appendChild(img);
-    });
-}
-
-function cargarImagenLocal(event) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const picto = datosPictogramas.find(item => item.id === idSeleccionado);
-        picto.img = e.target.result;
-        picto.texto = prompt("Nombre del pictograma:") || "Imagen";
-        guardarYRefrescar();
-        cerrarBuscador();
-    };
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-// AUDIO
+// 4. GESTIÓN DE AUDIO (Grabación)
 async function gestionarGrabacion(event, id) {
     event.stopPropagation();
-    idSeleccionado = id;
     const boton = event.target;
 
-    // Verificar si ya estamos grabando
-    if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        try {
-            // Pedir permiso explícito al usuario
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            
-            mediaRecorder = new MediaRecorder(stream);
-            chunks = [];
-
-            mediaRecorder.ondataavailable = e => {
-                if (e.data.size > 0) chunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = () => {
-                    const base64Audio = reader.result;
-                    // Guardar en el array
-                    const picto = datosPictogramas.find(p => p.id === idSeleccionado);
-                    if (picto) {
-                        picto.audio = base64Audio;
-                        guardarYRefrescar();
-                        alert("✅ ¡Audio grabado con éxito!");
-                    }
-                };
-                // Detener el uso del micrófono físicamente
-                stream.getTracks().forEach(track => track.stop());
-            };
-
-            mediaRecorder.start();
-            boton.innerText = "🛑";
-            boton.style.backgroundColor = "#ff4444"; // Se pone rojo mientras graba
-        } catch (err) {
-            console.error("Error al acceder al micro:", err);
-            alert("❌ No se pudo acceder al micrófono. Asegúrate de dar permisos en el navegador.");
-        }
-    } else {
-        // Detener la grabación
+    if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         boton.innerText = "🎤";
-        boton.style.backgroundColor = "#eee";
+        boton.style.backgroundColor = "";
+        return;
+    }
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        chunks = [];
+
+        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/mp3' });
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+                const indice = datosPictogramas.findIndex(p => p.id === id);
+                if (indice !== -1) {
+                    datosPictogramas[indice].audio = reader.result;
+                    guardarYRefrescar();
+                }
+            };
+            stream.getTracks().forEach(t => t.stop());
+        };
+
+        mediaRecorder.start();
+        boton.innerText = "🛑";
+        boton.style.backgroundColor = "red";
+    } catch (err) {
+        alert("Permite el acceso al micrófono para grabar.");
     }
 }
 
-// RESPALDOS Y UTILIDADES
-// Función central para guardar y actualizar la vista
-function guardarYRefrescar() {
-    localStorage.setItem('tablero_personalizado', JSON.stringify(datosPictogramas));
-    renderizarTablero(); // Esto es vital para que veas el cambio al instante
-}
-
-function agregarCelda() {
-    const nuevoId = Date.now(); // Genera un ID único basado en el tiempo
-    datosPictogramas.push({ 
-        id: nuevoId, 
-        texto: "Nuevo", 
-        icono: "❓", 
-        img: "", 
-        audio: null 
-    });
-    guardarYRefrescar();
-}
-
-function quitarUltimaCelda() {
-    if (datosPictogramas.length > 0) {
-        if (confirm("¿Seguro que quieres eliminar la última celda?")) {
-            datosPictogramas.pop();
+// 5. LIMPIEZA Y EDICIÓN
+function limpiarContenidoCelda(event, id) {
+    event.stopPropagation();
+    if (confirm("¿Borrar imagen, texto y audio de esta celda?")) {
+        const indice = datosPictogramas.findIndex(p => p.id === id);
+        if (indice !== -1) {
+            datosPictogramas[indice].texto = "Vacío";
+            datosPictogramas[indice].img = "https://via.placeholder.com/100";
+            datosPictogramas[indice].audio = null;
             guardarYRefrescar();
         }
     }
 }
 
+function guardarYRefrescar() {
+    localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+    renderizarTablero();
+}
+
+// 6. RESPALDOS (Guardar y Cargar Archivo)
 function exportarTablero() {
-    const blob = new Blob([JSON.stringify(datosPictogramas)], {type: "application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = "tablero_respaldo.json"; a.click();
+    const dataStr = JSON.stringify(datosPictogramas);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const link = document.createElement('a');
+    link.setAttribute("href", dataUri);
+    link.setAttribute("download", "respaldo_tablero.json");
+    link.click();
 }
 
 function importarTablero(event) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
     const reader = new FileReader();
     reader.onload = (e) => {
         datosPictogramas = JSON.parse(e.target.result);
         guardarYRefrescar();
+        alert("Respaldo cargado con éxito");
     };
-    reader.readAsText(event.target.files[0]);
+    reader.readAsText(archivo);
 }
 
-function limpiarFrase() { document.getElementById('contenedor-frase').innerHTML = ""; }
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(reg => console.log('App lista para instalar'))
-    .catch(err => console.log('Error al registrar app', err));
-}
-function reiniciarTablero() {
-    // Confirmación para evitar borrados accidentales
-    if (confirm("¿Estás seguro de que quieres borrar la frase actual y limpiar el tablero?")) {
-        
-        // 1. Limpiar la barra de frase superior
-        const contenedorFrase = document.getElementById('contenedor-frase');
-        if (contenedorFrase) {
-            contenedorFrase.innerHTML = "";
-        }
-
-        // 2. Si quieres que el tablero vuelva a su estado inicial (vacío de fábrica):
-        localStorage.clear(); // Descomenta esta línea solo si quieres borrar TODO el progreso
-        location.reload();    // Descomenta esta línea solo si quieres borrar TODO el progreso
-
-        console.log("Tablero reiniciado");
-    }
-}
-function limpiarContenidoCelda(event, id) {
-    event.stopPropagation(); // Evita que la celda se seleccione al intentar borrarla
+// 7. INICIO AL CARGAR PÁGINA
+window.onload = () => {
+    renderizarTablero();
     
-    if (confirm("¿Quieres borrar todo el contenido de esta celda (imagen, nombre y audio)?")) {
-        const indice = datosPictogramas.findIndex(p => p.id === id);
-        
-        if (indice !== -1) {
-            // Devolvemos la celda a su estado inicial/vacío
-            datosPictogramas[indice].texto = "Nuevo";
-            datosPictogramas[indice].img = ""; 
-            datosPictogramas[indice].audio = null; // Borra el audio grabado
-            datosPictogramas[indice].icono = "❓"; // Icono por defecto
-            
-            // Guardamos los cambios y redibujamos el tablero
-            guardarYRefrescar();
-            console.log("Celda " + id + " reseteada correctamente.");
-        }
+    // Registrar Service Worker para la App (PWA)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
     }
-}
-
-
+};
 
 
 
