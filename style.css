@@ -294,6 +294,48 @@ html, body {
     gap: 15px;
     justify-content: center;
 }
+.menu-config {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Estilo unificado para ambos */
+.btn-ajuste {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 8px; /* Cambia a 50px si los quieres muy redondeados */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, background 0.2s;
+    height: 45px;      /* Altura fija para que sean iguales */
+    min-width: 160px;  /* Ancho mínimo para que no cambien de tamaño por el texto */
+    box-sizing: border-box;
+}
+
+.btn-guardar {
+    background-color: #28a745;
+}
+
+.btn-cargar {
+    background-color: #007bff;
+}
+
+/* Efecto al pasar el mouse */
+.btn-ajuste:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.btn-ajuste:active {
+    transform: scale(0.95);
+}
 
 
 
