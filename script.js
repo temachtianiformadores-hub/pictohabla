@@ -79,22 +79,36 @@ function seleccionarPictograma(picto) {
 function borrarFrase() {
     document.getElementById('contenedor-frase').innerHTML = '';
 }
-
-// 5. BUSCADOR (El Lápiz)
+// 5. BUSCADOR (El Lápiz ahora abre el Modal)
 function abrirBuscador(event, id) {
-    event.stopPropagation();
-    idSeleccionado = id;
-    // Aquí puedes abrir tu modal de búsqueda
-    const nuevoTexto = prompt("Escribe el nombre para esta celda:", "Comer");
-    const nuevaUrl = prompt("Pega la URL de la imagen:", "https://example.com/imagen.png");
+    event.stopPropagation(); // Evita que la celda se seleccione
+    idSeleccionado = id; // Guardamos qué celda vamos a editar
     
-    if (nuevoTexto || nuevaUrl) {
-        const indice = datosPictogramas.findIndex(p => p.id === id);
-        if (indice !== -1) {
-            if (nuevoTexto) datosPictogramas[indice].texto = nuevoTexto;
-            if (nuevaUrl) datosPictogramas[indice].img = nuevaUrl;
-            guardarYRefrescar();
-        }
+    // Mostramos el modal que ya tienes en tu HTML
+    const modal = document.getElementById('modal-buscador');
+    if (modal) {
+        modal.style.display = 'block';
+    } else {
+        // Por si el ID en tu HTML es diferente, intenta con 'modal'
+        document.querySelector('.modal').style.display = 'block';
+    }
+}
+
+// Función para cerrar el modal
+function cerrarModal() {
+    const modal = document.getElementById('modal-buscador') || document.querySelector('.modal');
+    modal.style.display = 'none';
+}
+
+// Función que se ejecuta cuando el usuario elige una imagen en el buscador
+function seleccionarImagenBusqueda(urlImagen, textoImagen) {
+    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
+    
+    if (indice !== -1) {
+        datosPictogramas[indice].img = urlImagen;
+        datosPictogramas[indice].texto = textoImagen; // Cambia el nombre automáticamente
+        guardarYRefrescar();
+        cerrarModal();
     }
 }
 
@@ -146,6 +160,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
