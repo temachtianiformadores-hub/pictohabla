@@ -38,7 +38,7 @@ function añadirCelda() {
     const nuevaCelda = {
         id: Date.now(),
         texto: "Nuevo",
-        img: "https://via.placeholder.com/100?text=Sube+Imagen",
+        img: "logo_nemi_e.jpg",
         audio: null
     };
     datosPictogramas.push(nuevaCelda);
@@ -245,6 +245,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
