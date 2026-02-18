@@ -180,6 +180,28 @@ button {
     border: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+.btn-subir-archivo {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d; /* Color gris profesional */
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-subir-archivo:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px); /* Pequeño salto al tocarlo */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-subir-archivo:active {
+    transform: translateY(0);
+}
 /* AJUSTE MÓVIL */
 @media (max-width: 600px) {
     .grid-tablero { grid-template-columns: repeat(2, 1fr); }
@@ -222,6 +244,7 @@ html, body {
     background: #ff4444;
     color: white;
 }
+
 
 
 
