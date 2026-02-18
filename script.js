@@ -257,54 +257,65 @@ function subirImagenLocal(event) {
     };
     reader.readAsDataURL(archivo);
 }
-// 6. AUDIO Y LIMPIEZA
-async function gestionarGrabacion(event, id) {
-    event.stopPropagation();
+// 6. AUDIO Y GRABACIÓN (Versión Optimizada)
+let mediaRecorder;
+let chunks = [];
+
+async function gestionarGrabacion(event) {
+    // Usamos el idSeleccionado que definimos al abrir el modal
+    if (!idSeleccionado) return alert("Primero selecciona una celda");
+
     const boton = event.target;
+
+    // Si ya está grabando, lo detenemos
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
-        boton.innerText = "🎤";
+        boton.innerText = "🎤 Grabar Voz";
+        boton.style.backgroundColor = ""; // Vuelve al color original
         return;
     }
+
+    // Si no está grabando, iniciamos el proceso
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
         chunks = [];
-        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) chunks.push(e.data);
+        };
+
         mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/webm' }); // Formato compatible
             const reader = new FileReader();
-            reader.readAsDataURL(new Blob(chunks));
+            reader.readAsDataURL(blob);
             reader.onloadend = () => {
-                const indice = datosPictogramas.findIndex(p => p.id === id);
+                const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
                 if (indice !== -1) {
                     datosPictogramas[indice].audio = reader.result;
                     guardarYRefrescar();
+                    alert("✅ Grabación guardada");
                 }
             };
+            // Apagar el micrófono físicamente
             stream.getTracks().forEach(t => t.stop());
         };
-        mediaRecorder.start();
-        boton.innerText = "🛑";
-    } catch (err) { alert("Activa el micro"); }
-}
 
-function limpiarContenidoCelda(event, id) {
-    event.stopPropagation();
-    const indice = datosPictogramas.findIndex(p => p.id === id);
-    if (indice !== -1) {
-        datosPictogramas[indice].texto = "Vacío";
-        datosPictogramas[indice].img = "https://via.placeholder.com/100?text=Vacío";
-        datosPictogramas[indice].audio = null;
-        guardarYRefrescar();
+        mediaRecorder.start();
+        boton.innerText = "🛑 Detener Grabación";
+        boton.style.backgroundColor = "#ff4444";
+    } catch (err) {
+        console.error(err);
+        alert("Error: Activa los permisos del micrófono en tu navegador.");
     }
 }
-
 function guardarYRefrescar() {
     localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
     renderizarTablero();
 }
 
 window.onload = renderizarTablero;
+
 
 
 
