@@ -60,13 +60,12 @@ body {
     object-fit: contain;
 }
 .seccion-frase {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #f9f9f9;
+    margin-bottom: 40px; /* Esto crea un espacio amplio hacia abajo */
     padding: 15px;
-    border-radius: 12px;
-    border: 2px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
 }
 
 .frase-controles {
@@ -285,6 +284,15 @@ html, body {
 .btn-limpiar:hover {
     background: #ff4444;
     color: white;
+}
+/* También podemos darle un estilo diferente al contenedor de los botones de ajuste */
+.contenedor-ajustes {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed #ccc; /* Una línea sutil para separar visualmente */
+    display: flex;
+    gap: 15px;
+    justify-content: center;
 }
 
 
