@@ -196,6 +196,32 @@ html, body {
     height: 100%;
     overscroll-behavior: none; /* Evita el efecto de rebote al deslizar hacia arriba */
 }
+.card {
+    position: relative; /* Necesario para ubicar el botón X dentro */
+}
+
+.btn-limpiar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #ff4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-limpiar:hover {
+    background: #ff4444;
+    color: white;
+}
 
 
 
