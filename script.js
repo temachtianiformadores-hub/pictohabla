@@ -160,43 +160,33 @@ function ejecutarBusqueda() {
         });
 }
 
-function seleccionarImagenBusqueda(url, texto) {
-    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
-    if (indice !== -1) {
-        datosPictogramas[indice].img = url;
-        datosPictogramas[indice].texto = texto;
-        
-        guardarYRefrescar();
-        cerrarModal();
-        // Limpiamos el input para la próxima búsqueda
-        document.getElementById('input-busqueda').value = "";
-    }
-}
-
-// Esta función es la que finalmente cambia la celda
-function seleccionarImagenBusqueda(url, texto) {
-    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
-    if (indice !== -1) {
-        datosPictogramas[indice].img = url;
-        datosPictogramas[indice].texto = texto;
-        
-        guardarYRefrescar();
-        cerrarModal();
-    }
-}
-
-// Función que se ejecuta cuando el usuario elige una imagen en el buscador
+// ÚNICA VERSIÓN de la función para aplicar la imagen seleccionada
 function seleccionarImagenBusqueda(urlImagen, textoImagen) {
+    // 1. Buscamos la celda que estamos editando actualmente
     const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
     
     if (indice !== -1) {
+        // 2. Actualizamos los datos con lo que elegimos en el buscador
         datosPictogramas[indice].img = urlImagen;
-        datosPictogramas[indice].texto = textoImagen; // Cambia el nombre automáticamente
+        datosPictogramas[indice].texto = textoImagen; 
+        
+        // 3. Guardamos en el cerebro de la app (localStorage) y redibujamos
         guardarYRefrescar();
+        
+        // 4. Cerramos el cuadro de búsqueda
         cerrarModal();
+        
+        // 5. Limpiamos el texto que escribimos para que esté vacío la próxima vez
+        const inputBusqueda = document.getElementById('input-busqueda');
+        if (inputBusqueda) {
+            inputBusqueda.value = "";
+        }
+        
+        console.log("Celda actualizada con éxito:", textoImagen);
+    } else {
+        console.error("No se encontró el ID de la celda seleccionada.");
     }
 }
-
 // 6. AUDIO Y LIMPIEZA
 async function gestionarGrabacion(event, id) {
     event.stopPropagation();
@@ -245,6 +235,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
