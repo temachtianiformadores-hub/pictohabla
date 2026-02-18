@@ -25,7 +25,6 @@ function renderizarTablero() {
             <img src="${picto.img || 'https://via.placeholder.com/100?text=Sube+Imagen'}" alt="${picto.texto}">
             <p>${picto.texto}</p>
             <div class="controles-celda">
-                <button onclick="gestionarGrabacion(event, ${picto.id})">🎤</button>
                 <button onclick="abrirBuscador(event, ${picto.id})">✏️</button>
             </div>
         `;
@@ -338,6 +337,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
