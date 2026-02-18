@@ -30,9 +30,9 @@
                 📂 Cargar Tablero 
                 <input type="file" id="importar-archivo" hidden onchange="importarTablero(event)">
             </label>
-            <button onclick="agregarCelda()" style="background:#6f42c1;">➕ Añadir Celda</button>
-            <button onclick="quitarUltimaCelda()" style="background:#dc3545;">➖ Quitar Celda</button>
-            <button class="boton-estandar" onclick="reiniciarTablero()" style="background:#ff9800;">🔄 Reiniciar Tablero</button>
+            <button onclick="añadirCelda()" style="background:#6f42c1;">➕ Añadir Celda</button>
+            <button onclick="quitarCelda()" style="background:#dc3545;">➖ Quitar Celda</button>
+            <button class="boton-estandar" onclick="reiniciarTableroCompleto()" style="background:#ff9800;">🔄 Reiniciar Tablero</button>
         </div>
 
         <div id="grid-tablero" class="grid-tablero"></div>
@@ -59,6 +59,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
