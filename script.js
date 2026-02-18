@@ -196,10 +196,12 @@ function ejecutarBusqueda() {
                 div.style.textAlign = 'center';
                 div.style.cursor = 'pointer';
 
-                div.innerHTML = `
-                    <img src="${imgUrl}" style="width:80px; height:80px; border-radius:10px; border:1px solid #eee;">
-                    <p style="font-size:12px; margin:0;">${termino}</p>
-                `;
+                // Dentro de la función que dibuja las celdas (refrescarTablero o similar)
+div.innerHTML = `
+    <img src="${picto.img}">
+    <p>${picto.texto}</p>
+    <button class="btn-editar" onclick="abrirModal(event, ${picto.id})">✏️</button>
+`;
                 
                 // Al hacer clic en una imagen de la búsqueda, se actualiza la celda
                 div.onclick = () => seleccionarImagenBusqueda(imgUrl, termino);
@@ -337,6 +339,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
