@@ -94,10 +94,56 @@ function abrirBuscador(event, id) {
     }
 }
 
-// Función para cerrar el modal
+// Cierra el modal al hacer clic en la (X) o fuera de él
 function cerrarModal() {
-    const modal = document.getElementById('modal-buscador') || document.querySelector('.modal');
-    modal.style.display = 'none';
+    const modal = document.getElementById('modal-buscador');
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Esta función se activa al darle clic al botón "Buscar" del modal
+function ejecutarBusqueda() {
+    const termino = document.getElementById('input-busqueda').value.toLowerCase();
+    const contenedorResultados = document.getElementById('resultados-busqueda');
+    
+    if (!termino) {
+        alert("Escribe algo para buscar");
+        return;
+    }
+
+    // Limpiamos resultados anteriores
+    contenedorResultados.innerHTML = "<p>Buscando...</p>";
+
+    // Simulación de búsqueda (Aquí es donde conectarías con ARASAAC o Google)
+    // Por ahora, usaremos una lógica de ejemplo para que veas cómo funciona:
+    setTimeout(() => {
+        contenedorResultados.innerHTML = ""; // Limpiar mensaje de carga
+        
+        // Ejemplo de resultado encontrado
+        const imgSimulada = `https://via.placeholder.com/100?text=${termino}`;
+        
+        const divImg = document.createElement('div');
+        divImg.innerHTML = `
+            <img src="${imgSimulada}" 
+                 onclick="seleccionarImagenBusqueda('${imgSimulada}', '${termino}')" 
+                 style="cursor:pointer; border:1px solid #ddd; border-radius:8px;">
+            <p>${termino}</p>
+        `;
+        contenedorResultados.appendChild(divImg);
+    }, 500);
+}
+
+// Esta función es la que finalmente cambia la celda
+function seleccionarImagenBusqueda(url, texto) {
+    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
+    if (indice !== -1) {
+        datosPictogramas[indice].img = url;
+        datosPictogramas[indice].texto = texto;
+        
+        guardarYRefrescar();
+        cerrarModal();
+    }
 }
 
 // Función que se ejecuta cuando el usuario elige una imagen en el buscador
@@ -160,6 +206,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
