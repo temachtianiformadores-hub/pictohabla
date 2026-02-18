@@ -59,7 +59,36 @@ body {
     height: 60px !important;
     object-fit: contain;
 }
+.seccion-frase {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+}
 
+.frase-controles {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-reproducir {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-reproducir:hover {
+    background-color: #45a049;
+}
 /* 4. TABLERO Y CELDAS (Con Marco y Sombra) */
 .grid-tablero {
     display: grid;
@@ -257,6 +286,7 @@ html, body {
     background: #ff4444;
     color: white;
 }
+
 
 
 
