@@ -1,6 +1,6 @@
 // 1. VARIABLES Y DATOS (Con imágenes de ejemplo funcionales)
 let datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
-    { id: Date.now(), texto: "Yo", img: "https://otroscolores.com/img/pictos/persona.png", audio: null },
+    { id: Date.now(), texto: "Yo", img src="logo_nemi_e.jpg"", audio: null },
     { id: Date.now() + 1, texto: "Quiero", img: "https://otroscolores.com/img/pictos/querer.png", audio: null }
 ];
 
@@ -245,6 +245,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
