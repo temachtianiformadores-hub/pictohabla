@@ -309,12 +309,38 @@ async function gestionarGrabacion(event) {
         alert("Error: Activa los permisos del micrófono en tu navegador.");
     }
 }
+function limpiarContenidoCelda() {
+    // 1. Verificamos que haya una celda seleccionada (la que abrimos en el modal)
+    if (!idSeleccionado) return;
+
+    // 2. Pedimos confirmación para no borrar por error
+    if (!confirm("¿Seguro que quieres vaciar esta celda?")) return;
+
+    // 3. Buscamos la celda en nuestra base de datos
+    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
+    
+    if (indice !== -1) {
+        // 4. Devolvemos la celda a su estado original (vacío)
+        datosPictogramas[indice].texto = "Vacío";
+        datosPictogramas[indice].img = "https://via.placeholder.com/150?text=Vacío"; // O una imagen blanca
+        datosPictogramas[indice].audio = null; // Borramos también la grabación si existía
+        
+        // 5. Guardamos en el cerebro de la app y refrescamos la vista
+        guardarYRefrescar();
+        
+        // 6. Cerramos el modal para ver el cambio
+        cerrarModal();
+        
+        console.log("Celda limpiada correctamente.");
+    }
+}
 function guardarYRefrescar() {
     localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
     renderizarTablero();
 }
 
 window.onload = renderizarTablero;
+
 
 
 
