@@ -319,7 +319,7 @@ function limpiarContenidoCelda() {
     if (indice !== -1) {
         // 4. Devolvemos la celda a su estado original (vacío)
         datosPictogramas[indice].texto = "Vacío";
-        datosPictogramas[indice].img = "https://via.placeholder.com/150?text=Vacío"; // O una imagen blanca
+        datosPictogramas[indice].img = "logo_nemi_e.jpg"; // O una imagen blanca
         datosPictogramas[indice].audio = null; // Borramos también la grabación si existía
         
         // 5. Guardamos en el cerebro de la app y refrescamos la vista
@@ -337,6 +337,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
