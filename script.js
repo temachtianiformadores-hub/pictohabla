@@ -196,12 +196,11 @@ function ejecutarBusqueda() {
                 div.style.textAlign = 'center';
                 div.style.cursor = 'pointer';
 
-                // Dentro de la función que dibuja las celdas (refrescarTablero o similar)
-div.innerHTML = `
-    <img src="${picto.img}">
-    <p>${picto.texto}</p>
-    <button class="btn-editar" onclick="abrirModal(event, ${picto.id})">✏️</button>
-`;
+              // HTML corregido para el buscador: solo la imagen y el nombre que viene de ARASAAC
+    div.innerHTML = `
+        <img src="${imgUrl}" style="width: 80px; height: 80px; border-radius: 5px;">
+        <p style="font-size: 12px; margin: 5px 0;">${picto.keywords[0].keyword}</p>
+    `;
                 
                 // Al hacer clic en una imagen de la búsqueda, se actualiza la celda
                 div.onclick = () => seleccionarImagenBusqueda(imgUrl, termino);
@@ -339,6 +338,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
