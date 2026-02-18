@@ -40,8 +40,15 @@
 
     <div id="modal-buscador" class="modal">
     <div class="modal-content">
-        <h2>🔍 Editar Celda</h2>
-        <input type="text" id="input-busqueda" placeholder="Buscar en ARASAAC...">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+       <h2>Buscar Imagen</h2>
+        <input type="text" id="input-busqueda" placeholder="Ej: Manzana">
+        
+        <button onclick="ejecutarBusqueda()">Buscar</button>
+        
+        <div id="resultados-busqueda"></div>
+    </div>
+</div>
         
         <div style="margin-top: 10px;">
             <button onclick="buscarEnArasaac()" style="background:#007bff;">Buscar</button>
@@ -59,6 +66,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
