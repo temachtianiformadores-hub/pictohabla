@@ -49,12 +49,20 @@
         <div id="resultados-busqueda"></div>
     </div>
 </div>
-        
-    <input type="file" id="subir-imagen-local" hidden accept="image/*" onchange="cargarImagenLocal(event)">
+    <div class="opciones-subida" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+    <p>¿No está en ARASAAC? Sube una foto:</p>
+    
+    <label class="boton-estandar" style="background: #6c757d; cursor: pointer;">
+        📁 Seleccionar del dispositivo
+        <input type="file" id="subir-local" hidden accept="image/*" onchange="subirImagenLocal(event)">
+    </label>
+</div>    
+   
 
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
