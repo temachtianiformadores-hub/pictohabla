@@ -94,44 +94,83 @@ function abrirBuscador(event, id) {
     }
 }
 
-// Cierra el modal al hacer clic en la (X) o fuera de él
+// --- FUNCIONES DEL MODAL ---
+
 function cerrarModal() {
     const modal = document.getElementById('modal-buscador');
     if (modal) {
-        modal.style.display = "none";
+        modal.style.display = 'none';
     }
 }
 
-// Esta función se activa al darle clic al botón "Buscar" del modal
+// Escuchar si el usuario presiona "Enter" en el buscador
+document.getElementById('input-busqueda')?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        ejecutarBusqueda();
+    }
+});
+
 function ejecutarBusqueda() {
-    const termino = document.getElementById('input-busqueda').value.toLowerCase();
+    const input = document.getElementById('input-busqueda');
     const contenedorResultados = document.getElementById('resultados-busqueda');
-    
-    if (!termino) {
-        alert("Escribe algo para buscar");
+    const termino = input.value.trim();
+
+    if (termino === "") {
+        alert("Por favor, escribe algo para buscar.");
         return;
     }
 
-    // Limpiamos resultados anteriores
-    contenedorResultados.innerHTML = "<p>Buscando...</p>";
+    contenedorResultados.innerHTML = "<p>Buscando pictograma...</p>";
 
-    // Simulación de búsqueda (Aquí es donde conectarías con ARASAAC o Google)
-    // Por ahora, usaremos una lógica de ejemplo para que veas cómo funciona:
-    setTimeout(() => {
-        contenedorResultados.innerHTML = ""; // Limpiar mensaje de carga
+    // CONEXIÓN CON ARASAAC (Base de datos de pictogramas reales)
+    fetch(`https://api.arasaac.org/api/pictograms/es/search/${termino}`)
+        .then(response => response.json())
+        .then(data => {
+            contenedorResultados.innerHTML = ""; // Limpiar mensaje de carga
+            
+            if (data.length === 0 || data.error) {
+                contenedorResultados.innerHTML = "<p>No se encontraron resultados.</p>";
+                return;
+            }
+
+            // Mostrar los primeros 8 resultados encontrados
+            data.slice(0, 8).forEach(picto => {
+                const imgUrl = `https://static.arasaac.org/pictograms/${picto._id}/${picto._id}_300.png`;
+                
+                const div = document.createElement('div');
+                div.className = 'resultado-item';
+                div.style.display = 'inline-block';
+                div.style.margin = '10px';
+                div.style.textAlign = 'center';
+                div.style.cursor = 'pointer';
+
+                div.innerHTML = `
+                    <img src="${imgUrl}" style="width:80px; height:80px; border-radius:10px; border:1px solid #eee;">
+                    <p style="font-size:12px; margin:0;">${termino}</p>
+                `;
+                
+                // Al hacer clic en una imagen de la búsqueda, se actualiza la celda
+                div.onclick = () => seleccionarImagenBusqueda(imgUrl, termino);
+                contenedorResultados.appendChild(div);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            contenedorResultados.innerHTML = "<p>Error de conexión. Intenta subir una foto local.</p>";
+        });
+}
+
+function seleccionarImagenBusqueda(url, texto) {
+    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
+    if (indice !== -1) {
+        datosPictogramas[indice].img = url;
+        datosPictogramas[indice].texto = texto;
         
-        // Ejemplo de resultado encontrado
-        const imgSimulada = `https://via.placeholder.com/100?text=${termino}`;
-        
-        const divImg = document.createElement('div');
-        divImg.innerHTML = `
-            <img src="${imgSimulada}" 
-                 onclick="seleccionarImagenBusqueda('${imgSimulada}', '${termino}')" 
-                 style="cursor:pointer; border:1px solid #ddd; border-radius:8px;">
-            <p>${termino}</p>
-        `;
-        contenedorResultados.appendChild(divImg);
-    }, 500);
+        guardarYRefrescar();
+        cerrarModal();
+        // Limpiamos el input para la próxima búsqueda
+        document.getElementById('input-busqueda').value = "";
+    }
 }
 
 // Esta función es la que finalmente cambia la celda
@@ -206,6 +245,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
