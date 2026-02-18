@@ -47,16 +47,19 @@
         <button onclick="ejecutarBusqueda()">Buscar</button>
         <div id="resultados-busqueda"></div>
 
-        <div class="opciones-subida" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
-            <p>¿No está en ARASAAC? Sube una foto:</p>
-            <label class="boton-estandar" style="background: #6c757d; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
-                📁 Seleccionar del dispositivo
-                <input type="file" id="subir-local" hidden accept="image/*" onchange="subirImagenLocal(event)">
-            </label>
-        </div>
+       <div class="opciones-subida" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;">
+    <p style="color: #666; font-size: 14px; margin-bottom: 10px;">¿No está en ARASAAC? Usa una foto tuya:</p>
+    
+    <label for="subir-local" class="btn-subir-archivo">
+        📷 Subir Foto
+    </label>
+    
+    <input type="file" id="subir-local" accept="image/*" onchange="subirImagenLocal(event)" style="display: none;">
+</div>
     </div> </div> <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
