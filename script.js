@@ -248,32 +248,36 @@ function subirImagenLocal(event) {
     reader.onload = function(e) {
         const urlImagenBase64 = e.target.result;
         
-        // 1. Buscamos la celda específica por el ID que guardamos al abrir el modal
+        // 1. Mostramos una previsualización inmediata en el modal para que la veas
+        const imgPrevia = document.querySelector('#modal-edicion img'); // Ajusta al ID de tu imagen en el modal
+        if (imgPrevia) imgPrevia.src = urlImagenBase64;
+
+        // 2. Guardamos la imagen en la variable de datos pero NO cerramos el modal
         const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
-        
         if (indice !== -1) {
-            // 2. Actualizamos el "cerebro" (los datos)
             datosPictogramas[indice].img = urlImagenBase64;
-            
-            // 3. Guardamos en LocalStorage y redibujamos TODO el tablero
-            guardarYRefrescar();
-            
-            // 4. Feedback visual y cierre
-            console.log("Imagen cargada con éxito en celda: " + idSeleccionado);
-            
-            // Limpiamos el input para que permita subir la misma foto en otra celda si se desea
-            event.target.value = ""; 
-            
-            // Cerramos el modal para que el usuario vea el cambio
-            cerrarModal(); 
+            // No llamamos a cerrarModal() aquí para que puedas escribir el nombre
+            console.log("Imagen cargada temporalmente. Ahora puedes cambiar el nombre.");
         }
     };
 
-    reader.onerror = function() {
-        alert("Error al leer el archivo. Intenta con otra imagen.");
-    };
-
     reader.readAsDataURL(archivo);
+}
+function guardarCambiosModal() {
+    if (!idSeleccionado) return;
+
+    const nuevoTexto = document.getElementById('input-texto-modal').value; // El ID de tu input de nombre
+    const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
+
+    if (indice !== -1) {
+        // Guardamos el nombre que escribiste
+        datosPictogramas[indice].texto = nuevoTexto;
+        
+        // Guardamos todo de forma definitiva
+        guardarYRefrescar();
+        cerrarModal();
+        alert("✅ Celda actualizada correctamente");
+    }
 }
 // 6. AUDIO Y GRABACIÓN (Versión Optimizada)
 async function gestionarGrabacion(event) {
@@ -355,6 +359,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
