@@ -56,12 +56,22 @@
 
        <div class="opciones-subida" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;">
     <p style="color: #666; font-size: 14px; margin-bottom: 10px;">¿No está en ARASAAC? Usa una foto tuya:</p>
+  
+           <input type="text" id="input-texto-modal" placeholder="Nombre de la imagen...">
+
+<label class="btn-subir">
+    📷 Elegir Foto
+    <input type="file" onchange="subirImagenLocal(event)" hidden>
+</label>
+
+<button onclick="guardarCambiosModal()" style="background: #28a745; color: white;">
+    💾 Finalizar y Guardar
+</button>
+     <!-- <label for="subir-local" class="btn-subir-archivo"> -->
+        <!-- 📷 Subir Foto -->
+    <!-- </label> -->
     
-    <label for="subir-local" class="btn-subir-archivo">
-        📷 Subir Foto
-    </label>
-    
-    <input type="file" id="subir-local" accept="image/*" onchange="subirImagenLocal(event)" style="display: none;">
+    <!-- <input type="file" id="subir-local" accept="image/*" onchange="subirImagenLocal(event)" style="display: none;"> -->
            <button id="btn-grabar" onclick="gestionarGrabacion(event)" class="btn-ajuste">
     🎤 Grabar Voz
 </button>
@@ -69,6 +79,7 @@
     </div> </div> <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
