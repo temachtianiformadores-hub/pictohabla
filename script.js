@@ -239,22 +239,40 @@ function seleccionarImagenBusqueda(urlImagen, textoImagen) {
         console.error("No se encontró el ID de la celda seleccionada.");
     }
 }
-// Función para procesar la imagen que subes desde tu dispositivo
 function subirImagenLocal(event) {
     const archivo = event.target.files[0];
-    if (!archivo) return;
+    if (!archivo || !idSeleccionado) return;
 
     const reader = new FileReader();
+
     reader.onload = function(e) {
-        const urlImagenLocal = e.target.result; // Esta es la imagen en formato base64
+        const urlImagenBase64 = e.target.result;
         
-        // Usamos la misma lógica para guardar en la celda seleccionada
-        const nombreImagen = prompt("Escribe el nombre para esta imagen:", "Nuevo");
+        // 1. Buscamos la celda específica por el ID que guardamos al abrir el modal
+        const indice = datosPictogramas.findIndex(p => p.id === idSeleccionado);
         
-        if (nombreImagen) {
-            seleccionarImagenBusqueda(urlImagenLocal, nombreImagen);
+        if (indice !== -1) {
+            // 2. Actualizamos el "cerebro" (los datos)
+            datosPictogramas[indice].img = urlImagenBase64;
+            
+            // 3. Guardamos en LocalStorage y redibujamos TODO el tablero
+            guardarYRefrescar();
+            
+            // 4. Feedback visual y cierre
+            console.log("Imagen cargada con éxito en celda: " + idSeleccionado);
+            
+            // Limpiamos el input para que permita subir la misma foto en otra celda si se desea
+            event.target.value = ""; 
+            
+            // Cerramos el modal para que el usuario vea el cambio
+            cerrarModal(); 
         }
     };
+
+    reader.onerror = function() {
+        alert("Error al leer el archivo. Intenta con otra imagen.");
+    };
+
     reader.readAsDataURL(archivo);
 }
 // 6. AUDIO Y GRABACIÓN (Versión Optimizada)
@@ -337,6 +355,7 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+
 
 
 
