@@ -1,12 +1,13 @@
-// 1. DATOS INICIALES (IDs fijos para evitar errores de Date.now en iPad)
-let datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
+// 1. VARIABLES Y DATOS (Estructura Blindada)
+var iniciales = [
     { id: "101", texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null },
     { id: "102", texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null }
 ];
 
-let idSeleccionado = null;
+var datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || iniciales;
+var idSeleccionado = null;
 
-// 2. RENDERIZAR (Versión ultra-compatible)
+// 2. RENDERIZAR TABLERO
 function renderizarTablero() {
     var contenedor = document.getElementById('grid-tablero');
     if (!contenedor) return;
@@ -17,9 +18,8 @@ function renderizarTablero() {
         card.className = 'card';
         card.onclick = function() { seleccionarPictograma(picto); };
 
-        // IMPORTANTE: id entre comillas simples '${picto.id}' para Safari
         card.innerHTML = `
-            <button class="btn-limpiar" onclick="botonLimpiar(event, '${picto.id}')">🗑️</button>
+            <button class="btn-limpiar" onclick="limpiarCelda(event, '${picto.id}')">🗑️</button>
             <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="">
             <p>${picto.texto}</p>
             <div class="controles-celda">
@@ -28,29 +28,10 @@ function renderizarTablero() {
         `;
         contenedor.appendChild(card);
     });
+    console.log("Tablero renderizado con éxito");
 }
 
-// 3. FUNCIONES GLOBALES (Aseguramos que el HTML las vea)
-window.botonLimpiar = function(event, id) {
-    event.stopPropagation();
-    if (confirm("¿Vaciar celda?")) {
-        const i = datosPictogramas.findIndex(p => String(p.id) === String(id));
-        if (i !== -1) {
-            datosPictogramas[i].texto = "Agrega Picto";
-            datosPictogramas[i].img = "logo_nemi_e.jpg";
-            datosPictogramas[i].audio = null;
-            guardarYRefrescar();
-        }
-    }
-};
-
-window.abrirBuscador = function(event, id) {
-    event.stopPropagation();
-    idSeleccionado = id;
-    const modal = document.getElementById('modal-buscador');
-    if (modal) modal.style.display = 'block';
-};
-
+// 3. FUNCIONES GLOBALES (Blindadas para que el HTML siempre las vea)
 window.añadirCelda = function() {
     datosPictogramas.push({ id: "id-" + Date.now(), texto: "Nuevo Picto", img: "logo_nemi_e.jpg", audio: null });
     guardarYRefrescar();
@@ -62,10 +43,28 @@ window.quitarCelda = function() {
 };
 
 window.reiniciarTableroCompleto = function() {
-    if (confirm("¿Borrar todo?")) {
+    if (confirm("¿Borrar todo el progreso?")) {
         localStorage.removeItem('tablero_datos');
         location.reload();
     }
+};
+
+window.limpiarCelda = function(event, id) {
+    event.stopPropagation();
+    var i = datosPictogramas.findIndex(function(p) { return String(p.id) === String(id); });
+    if (i !== -1) {
+        datosPictogramas[i].texto = "Agrega Picto";
+        datosPictogramas[i].img = "logo_nemi_e.jpg";
+        datosPictogramas[i].audio = null;
+        guardarYRefrescar();
+    }
+};
+
+window.abrirBuscador = function(event, id) {
+    event.stopPropagation();
+    idSeleccionado = id;
+    var modal = document.getElementById('modal-buscador');
+    if (modal) modal.style.display = 'block';
 };
 
 function guardarYRefrescar() {
@@ -73,8 +72,8 @@ function guardarYRefrescar() {
     renderizarTablero();
 }
 
-// 4. EL ARRANQUE (Solo un método, el más seguro para iPad)
+// 4. ARRANQUE ÚNICO
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("App lista");
+    console.log("App Iniciada correctamente");
     renderizarTablero();
 });
