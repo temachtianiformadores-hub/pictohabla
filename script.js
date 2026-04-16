@@ -365,19 +365,21 @@ function guardarYRefrescar() {
     renderizarTablero();
 }
 
+// 1. Al terminar de cargar, ejecutar la renderización
 window.onload = renderizarTablero;
-// Función para asegurar el arranque en iPad/iOS
+
+// 2. Función de seguridad para iPad/iOS
 function inicializarApp() {
     console.log("Inicializando tablero...");
-    if (typeof refrescarTablero === 'function') {
-        refrescarTablero();
+    // Cambiamos 'refrescarTablero' por 'renderizarTablero' para que coincidan
+    if (typeof renderizarTablero === 'function') {
+        renderizarTablero();
     } else {
-        // Si por alguna razón la función no carga rápido, reintentamos en 500ms
         setTimeout(inicializarApp, 500);
     }
 }
 
-// Intentar cargar por varios métodos
+// 3. Intentar cargar por varios métodos (asegura que funcione en Safari)
 if (document.readyState === "complete" || document.readyState === "interactive") {
     inicializarApp();
 } else {
