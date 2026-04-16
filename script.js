@@ -85,3 +85,18 @@ window.cerrarModal = function() {
         console.log("Modal cerrado correctamente");
     }
 };
+window.ejecutarBusqueda = function() {
+    console.log("Buscando...");
+    // Tu lógica de búsqueda aquí
+};
+
+window.gestionarGrabacion = function(event) {
+    event.stopPropagation();
+    console.log("Grabando...");
+    // Tu lógica de grabación aquí
+};
+
+window.guardarCambiosModal = function() {
+    console.log("Guardando...");
+    // Tu lógica de guardado aquí
+};
