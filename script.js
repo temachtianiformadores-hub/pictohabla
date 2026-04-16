@@ -10,19 +10,26 @@ let chunks = [];
 
 // 2. RENDERIZAR TABLERO
 function renderizarTablero() {
-    const contenedor = document.getElementById('grid-tablero');
-    if (!contenedor) return;
+    // 1. Verifica que este ID coincida EXACTAMENTE con tu <div id="..."> del HTML
+    const contenedor = document.getElementById('grid-tablero'); 
+    
+    if (!contenedor) {
+        console.error("No se encontró el contenedor 'grid-tablero'");
+        return;
+    }
+
     contenedor.innerHTML = '';
 
     datosPictogramas.forEach(picto => {
         const card = document.createElement('div');
         card.className = 'card';
-        // Al hacer clic en la celda se añade a la frase
-        card.onclick = () => seleccionarPictograma(picto);
+        
+        // Usamos una función tradicional para el clic, que Safari entiende mejor
+        card.onclick = function() { seleccionarPictograma(picto); };
 
         card.innerHTML = `
             <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, ${picto.id})">🗑️</button>
-            <img src="${picto.img || 'https://via.placeholder.com/100?text=Sube+Imagen'}" alt="${picto.texto}">
+            <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="${picto.texto}">
             <p>${picto.texto}</p>
             <div class="controles-celda">
                 <button onclick="abrirBuscador(event, ${picto.id})">✏️</button>
