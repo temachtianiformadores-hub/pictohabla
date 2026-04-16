@@ -131,14 +131,16 @@ body {
 
 .modal-content {
     background-color: white;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%); /* Centrado perfecto */
+    position: relative; /* Cambiado de absolute para mejor manejo de scroll */
+    margin: 5vh auto;   /* Margen arriba y abajo */
     padding: 25px;
     width: 90%;
     max-width: 450px;
+    max-height: 85vh;   /* No deja que el modal sea más alto que la pantalla */
+    overflow-y: auto;   /* ACTIVA EL SCROLL si hay muchos elementos */
     border-radius: 20px;
     text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 #resultados-busqueda {
