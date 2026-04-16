@@ -1,6 +1,6 @@
 // 1. VARIABLES Y DATOS (Con imágenes de ejemplo funcionales)
 let datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
-    { id: Date.now(), texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null }
+    { id: Date.now(), texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null },
     { id: Date.now() + 1, texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null }
 ];
 
