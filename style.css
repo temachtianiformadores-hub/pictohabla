@@ -131,16 +131,25 @@ body {
 
 .modal-content {
     background-color: white;
-    position: relative; /* Cambiado de absolute para mejor manejo de scroll */
-    margin: 5vh auto;   /* Margen arriba y abajo */
+    margin: 20px auto;        /* Margen simple para que no se pegue arriba */
     padding: 25px;
     width: 90%;
     max-width: 450px;
-    max-height: 85vh;   /* No deja que el modal sea más alto que la pantalla */
-    overflow-y: auto;   /* ACTIVA EL SCROLL si hay muchos elementos */
+    max-height: 85vh;         /* Limita la altura para que quepa en el iPad */
+    overflow-y: auto;         /* ACTIVA EL SCROLL: Indispensable para ver los botones */
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;       /* Cambiado de absolute para permitir scroll */
+    z-index: 10001;
+}
+
+/* Fuerza a que los botones sean visibles y fáciles de tocar */
+.opciones-subida {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-bottom: 20px;     /* Espacio extra al final */
 }
 
 #resultados-busqueda {
