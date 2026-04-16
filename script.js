@@ -77,3 +77,11 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("App Iniciada correctamente");
     renderizarTablero();
 });
+// Función para cerrar el buscador de Arasaac
+window.cerrarModal = function() {
+    const modal = document.getElementById('modal-buscador');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log("Modal cerrado correctamente");
+    }
+};
