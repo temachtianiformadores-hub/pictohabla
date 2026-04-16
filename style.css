@@ -131,16 +131,25 @@ body {
 
 .modal-content {
     background-color: white;
-    margin: 20px auto;        /* Margen simple para que no se pegue arriba */
-    padding: 25px;
+    position: relative;       /* Cambiado de absolute para evitar que se pierda abajo */
+    margin: 5vh auto;         /* Lo separa un poco del borde superior */
+    padding: 20px;
     width: 90%;
     max-width: 450px;
-    max-height: 85vh;         /* Limita la altura para que quepa en el iPad */
-    overflow-y: auto;         /* ACTIVA EL SCROLL: Indispensable para ver los botones */
+    max-height: 85vh;         /* Obliga al modal a no ser más grande que la pantalla */
+    overflow-y: auto;         /* ACTIVA EL SCROLL: Si no ves los botones, ahora podrás bajar con el dedo */
     border-radius: 20px;
     text-align: center;
-    position: relative;       /* Cambiado de absolute para permitir scroll */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     z-index: 10001;
+}
+
+/* Aseguramos que el área de subida no esté oculta */
+.opciones-subida {
+    display: block !important;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 2px solid #eee;
 }
 
 /* Fuerza a que los botones sean visibles y fáciles de tocar */
