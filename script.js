@@ -10,33 +10,30 @@ let chunks = [];
 
 // 2. RENDERIZAR TABLERO
 function renderizarTablero() {
-    // 1. Verifica que este ID coincida EXACTAMENTE con tu <div id="..."> del HTML
-    const contenedor = document.getElementById('grid-tablero'); 
-    
-    if (!contenedor) {
-        console.error("No se encontró el contenedor 'grid-tablero'");
-        return;
-    }
+    // Asegúrate que en el HTML el div sea id="grid-tablero"
+    var contenedor = document.getElementById('grid-tablero');
+    if (!contenedor) return;
 
     contenedor.innerHTML = '';
 
-    datosPictogramas.forEach(picto => {
-        const card = document.createElement('div');
+    // Usamos function(picto) en lugar de (picto) => para máxima compatibilidad
+    datosPictogramas.forEach(function(picto) {
+        var card = document.createElement('div');
         card.className = 'card';
         
-        // Usamos una función tradicional para el clic, que Safari entiende mejor
         card.onclick = function() { seleccionarPictograma(picto); };
 
         card.innerHTML = `
-            <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, ${picto.id})">🗑️</button>
+            <button class="btn-limpiar" onclick="limpiarContenidoCelda(event, '${picto.id}')">🗑️</button>
             <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="${picto.texto}">
             <p>${picto.texto}</p>
             <div class="controles-celda">
-                <button onclick="abrirBuscador(event, ${picto.id})">✏️</button>
+                <button onclick="abrirBuscador(event, '${picto.id}')">✏️</button>
             </div>
         `;
         contenedor.appendChild(card);
     });
+    console.log("Tablero renderizado con éxito");
 }
 
 // 3. FUNCIONES DE BOTONES SUPERIORES (Añadir/Quitar/Reiniciar)
