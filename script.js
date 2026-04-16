@@ -359,7 +359,23 @@ function guardarYRefrescar() {
 }
 
 window.onload = renderizarTablero;
+// Función para asegurar el arranque en iPad/iOS
+function inicializarApp() {
+    console.log("Inicializando tablero...");
+    if (typeof refrescarTablero === 'function') {
+        refrescarTablero();
+    } else {
+        // Si por alguna razón la función no carga rápido, reintentamos en 500ms
+        setTimeout(inicializarApp, 500);
+    }
+}
 
+// Intentar cargar por varios métodos
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    inicializarApp();
+} else {
+    document.addEventListener("DOMContentLoaded", inicializarApp);
+}
 
 
 
