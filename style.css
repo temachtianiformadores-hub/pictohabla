@@ -1,355 +1,89 @@
-/* 1. ESTRUCTURA GENERAL */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; padding: 20px; user-select: none; }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f8f9fa;
-    padding: 20px;
-    color: #333;
-}
-
-/* 2. ENCABEZADO Y LOGO */
-.encabezado-escuela {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.logo-escuela {
-    height: 70px;
-    width: auto;
-    object-fit: contain;
-}
-
-/* 3. BARRA DE FRASE (Horizontal) */
+/* BARRA DE FRASE */
 #contenedor-frase {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
+    overflow-x: auto;
     gap: 10px;
     background: white;
-    border: 2px solid #dee2e6;
+    border: 3px solid #007bff;
     border-radius: 15px;
-    min-height: 110px;
+    min-height: 120px;
+    padding: 15px;
     margin-bottom: 20px;
-    padding: 15px;
-    width: 100%;
-}
-
-.item-frase {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    width: 70px;
-    text-align: center;
 }
 
-.item-frase img {
-    width: 60px !important;
-    height: 60px !important;
-    object-fit: contain;
-}
-.seccion-frase {
-    margin-bottom: 40px; /* Esto crea un espacio amplio hacia abajo */
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-}
+.frase-item { text-align: center; min-width: 80px; cursor: pointer; }
 
-.frase-controles {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.btn-reproducir {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-reproducir:hover {
-    background-color: #45a049;
-}
-/* 4. TABLERO Y CELDAS (Con Marco y Sombra) */
+/* TABLERO */
 .grid-tablero {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 15px;
 }
 
 .card {
-    background: white !important;
-    border: 3px solid #ced4da !important; /* Marco */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important; /* Sombra */
+    background: white;
+    border: 3px solid #ced4da;
     border-radius: 15px;
     padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
+    position: relative;
     cursor: pointer;
-    transition: transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.card:active { transform: scale(0.95); }
+.card img { width: 100px; height: 100px; object-fit: contain; }
 
-.card img {
-    width: 100px !important;
-    height: 100px !important;
-    object-fit: contain;
-    margin-bottom: 8px;
-}
-
-/* 5. BUSCADOR (MODAL CENTRADO) */
+/* MODAL (Optimizado iPad) */
 .modal {
-    display: none; 
+    display: none;
     position: fixed;
-    z-index: 10000; /* Siempre al frente */
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    z-index: 10000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
     backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    background-color: white;
-    position: relative; 
-    margin: 5% auto; /* Centrado simple, sin transform */
+    background: white;
+    margin: 5% auto;
     padding: 20px;
     width: 90%;
     max-width: 500px;
-    max-height: 85vh; 
+    max-height: 85vh;
     overflow-y: auto;
-    display: block !important;
-    border-radius: 15px;
-    -webkit-overflow-scrolling: touch; /* Suaviza el scroll en iPad */
+    border-radius: 20px;
+    position: relative;
 }
 
-/* Asegura que el botón de buscar tenga un tamaño mínimo táctil */
-#modal-buscador button {
-    min-height: 44px;
-    padding: 10px 20px;
-    margin-top: 10px;
-}
 #resultados-busqueda {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-top: 15px;
-    max-height: 200px; /* Reducimos un poco para asegurar espacio a los botones */
-    overflow-y: auto;  /* Scroll interno para pictogramas */
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    margin: 15px 0;
 }
+
+#resultados-busqueda img { width: 100%; height: 80px; object-fit: contain; border-radius: 8px; cursor: pointer; }
 
 .opciones-subida {
-    display: flex !important; /* Unificamos en flex para apilar botones */
+    display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-    padding-bottom: 30px; /* Espacio extra para que el iPad no corte el último botón */
-}
-
-#resultados-busqueda img {
-    width: 100%;
-    height: 80px;
-    object-fit: contain;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-/* 6. BOTONES */
-.menu-config {
-    display: flex;
-    justify-content: center;
     gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
 }
 
-button {
-    border: none;
-    border-radius: 20px;
-    padding: 10px 15px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-/* Esto iguala el diseño de la etiqueta al de los botones */
-.boton-archivo {
-    display: inline-block;    /* Permite que tenga tamaño de botón */
-    background-color: #007bff; /* Color azul (puedes cambiarlo) */
-    color: white;
-    padding: 10px 15px;       /* Mismo espacio interno que los otros */
-    border-radius: 20px;      /* Misma redondez */
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    transition: background 0.3s;
-    font-size: 14px;          /* Ajusta para que coincida con los demás */
-    line-height: normal;      /* Alinea el texto al centro */
-}
+/* BOTONES */
+button { border: none; border-radius: 15px; padding: 10px 20px; color: white; font-weight: bold; cursor: pointer; }
+.btn-reproducir { background: #28a745; }
+.btn-borrar-frase { background: #dc3545; }
+.btn-cargar { background: #007bff; width: 100%; }
+.btn-limpiar { position: absolute; top: 5px; right: 5px; background: none; color: red; font-size: 18px; }
 
-.boton-archivo:hover {
-    background-color: #0056b3; /* Efecto al pasar el mouse */
-}
-.btn-borrar-frase {
-    background-color: #f44336;
-    color: white;
-    /* 1. Cambiamos el radio para que sea redondeado pero no un círculo perfecto */
-    border-radius: 8px; 
-    
-    /* 2. Eliminamos el ancho y alto fijos */
-    width: auto;
-    height: auto;
-    
-    /* 3. Agregamos espacio interno (padding) para que el texto respire */
-    padding: 10px 20px;
-    
-    /* Mantenemos tus otros estilos de diseño */
-    display: inline-flex; /* Cambiado de flex a inline-flex para que no ocupe todo el ancho */
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background 0.3s; /* Un toque extra para que se vea pro */
-}
-
-.btn-borrar-frase:hover {
-    background-color: #d32f2f; /* Se oscurece al pasar el mouse */
-}
-.btn-subir-archivo {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #6c757d; /* Color gris profesional */
-    color: white;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-subir-archivo:hover {
-    background-color: #5a6268;
-    transform: translateY(-2px); /* Pequeño salto al tocarlo */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.btn-subir-archivo:active {
-    transform: translateY(0);
-}
-/* AJUSTE MÓVIL */
-@media (max-width: 600px) {
-    .grid-tablero { grid-template-columns: repeat(2, 1fr); }
-}
-/* Evita que el usuario seleccione texto o le salga el menú azul al dejar presionado */
-* {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-}
-
-/* Hace que el tablero ocupe toda la pantalla sin barras blancas */
-html, body {
-    height: 100%;
-    overscroll-behavior: none; /* Evita el efecto de rebote al deslizar hacia arriba */
-}
-.card {
-    position: relative; /* Necesario para ubicar el botón X dentro */
-}
-
-.btn-limpiar {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(255, 0, 0, 0.1);
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    font-size: 12px;
-    cursor: pointer;
-    color: #ff4444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-
-.btn-limpiar:hover {
-    background: #ff4444;
-    color: white;
-}
-/* También podemos darle un estilo diferente al contenedor de los botones de ajuste */
-.contenedor-ajustes {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 2px dashed #ccc; /* Una línea sutil para separar visualmente */
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-.menu-config {
-    display: flex;
-    flex-wrap: wrap;    /* Si no caben en una fila, saltan a la siguiente ordenados */
-    gap: 10px;          /* Espacio entre botones */
-    justify-content: center;
-    align-items: center; /* ESTO alinea todos los botones por su centro horizontal */
-    margin: 20px 0;
-}
-
-.btn-ajuste {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 15px;    /* Espacio a los lados del texto */
-    height: 40px;       /* ALTURA FIJA PARA TODOS */
-    border-radius: 10px;
-    border: none;
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-    white-space: nowrap; /* Evita que el texto se parta en dos líneas */
-}
-
-/* Colores para los botones de la izquierda (opcional, para que combinen con tu imagen) */
-.btn-añadir { background-color: #6f42c1; }
-.btn-quitar { background-color: #d63384; }
-.btn-reiniciar { background-color: #fd7e14; }
-.btn-guardar { background-color: #28a745; }
-.btn-cargar { background-color: #007bff; }
-
-.btn-ajuste:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
-}
-
-
-
-
-
+.menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+.btn-ajuste { background: #6c757d; }
