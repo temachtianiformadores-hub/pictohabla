@@ -4,6 +4,7 @@ var datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
     { id: "102", texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null }
 ];
 var idSeleccionado = null;
+var fraseActual = []; // Array para guardar la frase de comunicación
 
 // 2. FUNCIONES DE RENDERIZADO
 window.renderizarTablero = function() {
@@ -14,6 +15,7 @@ window.renderizarTablero = function() {
     datosPictogramas.forEach(function(picto) {
         var card = document.createElement('div');
         card.className = 'card';
+        // IMPORTANTE: Al hacer clic en la tarjeta, se envía a la barra y suena
         card.onclick = function() { window.seleccionarPictograma(picto); };
 
         card.innerHTML = `
@@ -28,7 +30,7 @@ window.renderizarTablero = function() {
     });
 };
 
-// 3. FUNCIONES DEL MODAL Y BÚSQUEDA (Globalizadas)
+// 3. FUNCIONES DEL MODAL Y BÚSQUEDA
 window.abrirBuscador = function(event, id) {
     if(event) event.stopPropagation();
     idSeleccionado = id;
@@ -39,7 +41,6 @@ window.cerrarModal = function() {
     document.getElementById('modal-buscador').style.display = 'none';
 };
 
-// 1. FUNCIÓN DE BÚSQUEDA
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
     var termino = input ? input.value : "";
@@ -49,15 +50,12 @@ window.ejecutarBusqueda = function() {
         return;
     }
 
-    console.log("Buscando en ARASAAC: " + termino);
-
     fetch('https://api.arasaac.org/api/pictograms/es/search/' + termino)
         .then(function(res) { 
             if (!res.ok) throw new Error("Error en red");
             return res.json(); 
         })
         .then(function(data) { 
-            // IMPORTANTE: Llamamos a la función global
             window.mostrarResultados(data); 
         })
         .catch(function(err) { 
@@ -66,41 +64,31 @@ window.ejecutarBusqueda = function() {
         });
 };
 
-// 2. FUNCIÓN PARA DIBUJAR LOS RESULTADOS (La pieza que te faltaba)
 window.mostrarResultados = function(data) {
     var contenedor = document.getElementById('resultados-busqueda');
     if (!contenedor) return;
-    
-    contenedor.innerHTML = ''; // Limpiamos resultados anteriores
+    contenedor.innerHTML = '';
 
-    // Si no hay datos o no es un array, avisamos
     if (!data || data.length === 0) {
         contenedor.innerHTML = '<p>No se encontraron imágenes.</p>';
         return;
     }
 
-    // Dibujamos cada pictograma encontrado
     data.forEach(function(item) {
         var imgUrl = 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png';
         var img = document.createElement('img');
         img.src = imgUrl;
         img.alt = item.keywords[0].keyword;
-        img.title = item.keywords[0].keyword;
         
-        // Al hacer clic, guardamos la imagen en la celda
         img.onclick = function() {
             window.seleccionarImagenArasaac(imgUrl, item.keywords[0].keyword);
         };
-        
         contenedor.appendChild(img);
     });
 };
 
-// 3. FUNCIÓN PARA ASIGNAR LA IMAGEN A LA CELDA
 window.seleccionarImagenArasaac = function(url, texto) {
-    // idSeleccionado debe ser una variable global definida al inicio de tu script
     if (!idSeleccionado) return;
-
     var indice = datosPictogramas.findIndex(function(p) { 
         return String(p.id) === String(idSeleccionado); 
     });
@@ -108,55 +96,98 @@ window.seleccionarImagenArasaac = function(url, texto) {
     if (indice !== -1) {
         datosPictogramas[indice].img = url;
         datosPictogramas[indice].texto = texto;
-        
-        // Guardamos en LocalStorage y redibujamos el tablero
         localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
         window.renderizarTablero();
         window.cerrarModal();
     }
 };
 
-// 4. ARRANQUE
-document.addEventListener("DOMContentLoaded", function() {
-    window.renderizarTablero();
-});
-let fraseActual = []; // Array para guardar la frase
-
+// 4. FUNCIONES DE LA FRASE Y COMUNICACIÓN
 window.seleccionarPictograma = function(picto) {
-    // 1. Reproducir la voz inmediatamente
+    // Si la celda está vacía, no hacer nada
+    if (picto.texto === "Agrega Picto") return;
+
+    // 1. Reproducir voz
     if ('speechSynthesis' in window) {
-        const mensaje = new SpeechSynthesisUtterance(picto.texto);
+        var mensaje = new SpeechSynthesisUtterance(picto.texto);
         mensaje.lang = 'es-MX';
         window.speechSynthesis.speak(mensaje);
     }
 
-    // 2. Añadir a la barra de comunicación
+    // 2. Añadir a la frase
     fraseActual.push(picto);
-    actualizarBarraFrase();
+    window.actualizarBarraFrase();
 };
 
 window.actualizarBarraFrase = function() {
-    const contenedor = document.getElementById('contenedor-frase');
+    var contenedor = document.getElementById('contenedor-frase');
     if (!contenedor) return;
     
     contenedor.innerHTML = '';
     fraseActual.forEach(function(p, index) {
-        const item = document.createElement('div');
+        var item = document.createElement('div');
         item.className = 'frase-item';
+        item.style = "display: inline-block; text-align: center; margin: 5px;";
         item.innerHTML = `
-            <img src="${p.img}" style="width:50px; height:50px;">
-            <p style="font-size:12px;">${p.texto}</p>
+            <img src="${p.img}" style="width:60px; height:60px; border: 1px solid #ccc; border-radius: 8px;">
+            <p style="font-size:12px; margin: 0;">${p.texto}</p>
         `;
-        // Opción: clic para eliminar de la frase
         item.onclick = function() {
             fraseActual.splice(index, 1);
-            actualizarBarraFrase();
+            window.actualizarBarraFrase();
         };
         contenedor.appendChild(item);
     });
 };
 
+window.reproducirFraseCompleta = function() {
+    if (fraseActual.length === 0) return;
+    var textoCompleto = fraseActual.map(function(p) { return p.texto; }).join(" ");
+    var mensaje = new SpeechSynthesisUtterance(textoCompleto);
+    mensaje.lang = 'es-MX';
+    window.speechSynthesis.speak(mensaje);
+};
+
 window.borrarFrase = function() {
     fraseActual = [];
-    actualizarBarraFrase();
+    window.actualizarBarraFrase();
 };
+
+// 5. GESTIÓN DE CELDAS (Añadir/Quitar)
+window.añadirCelda = function() {
+    var nuevoId = "id-" + Date.now();
+    datosPictogramas.push({ id: nuevoId, texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null });
+    localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+    window.renderizarTablero();
+};
+
+window.quitarCelda = function() {
+    if (datosPictogramas.length > 1) {
+        datosPictogramas.pop();
+        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+        window.renderizarTablero();
+    }
+};
+
+window.limpiarCelda = function(event, id) {
+    event.stopPropagation();
+    var indice = datosPictogramas.findIndex(function(p) { return String(p.id) === String(id); });
+    if (indice !== -1) {
+        datosPictogramas[indice].texto = "Agrega Picto";
+        datosPictogramas[indice].img = "logo_nemi_e.jpg";
+        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+        window.renderizarTablero();
+    }
+};
+
+window.reiniciarTableroCompleto = function() {
+    if (confirm("¿Seguro que quieres reiniciar todo el tablero?")) {
+        localStorage.removeItem('tablero_datos');
+        location.reload();
+    }
+};
+
+// 6. INICIO
+document.addEventListener("DOMContentLoaded", function() {
+    window.renderizarTablero();
+});
