@@ -131,34 +131,15 @@ body {
 
 .modal-content {
     background-color: white;
-    position: relative;       /* Cambiado de absolute para evitar que se pierda abajo */
-    margin: 5vh auto;         /* Lo separa un poco del borde superior */
+    position: relative; 
+    margin: 5% auto;
     padding: 20px;
     width: 90%;
-    max-width: 450px;
-    max-height: 85vh;         /* Obliga al modal a no ser más grande que la pantalla */
-    overflow-y: auto;         /* ACTIVA EL SCROLL: Si no ves los botones, ahora podrás bajar con el dedo */
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    z-index: 10001;
-}
-
-/* Aseguramos que el área de subida no esté oculta */
-.opciones-subida {
+    max-width: 500px;
+    max-height: 80vh; 
+    overflow-y: auto;   /* Permite scroll si el contenido crece */
     display: block !important;
-    margin-top: 25px;
-    padding-top: 15px;
-    border-top: 2px solid #eee;
-}
-
-/* Fuerza a que los botones sean visibles y fáciles de tocar */
-.opciones-subida {
-    display: flex !important;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    padding-bottom: 20px;     /* Espacio extra al final */
+    border-radius: 15px;
 }
 
 #resultados-busqueda {
@@ -166,8 +147,18 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-top: 15px;
-    max-height: 250px;
-    overflow-y: auto;
+    max-height: 200px; /* Reducimos un poco para asegurar espacio a los botones */
+    overflow-y: auto;  /* Scroll interno para pictogramas */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.opciones-subida {
+    display: flex !important; /* Unificamos en flex para apilar botones */
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-bottom: 30px; /* Espacio extra para que el iPad no corte el último botón */
 }
 
 #resultados-busqueda img {
