@@ -1,23 +1,47 @@
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; padding: 20px; user-select: none; }
+/* 1. RESET Y BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-/* BARRA DE FRASE */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f8f9fa;
+    padding: 15px;
+    color: #333;
+    user-select: none;
+}
+
+/* 2. BARRA DE FRASE (DESLIZABLE) */
 #contenedor-frase {
     display: flex !important;
+    flex-direction: row !important;
     overflow-x: auto;
     gap: 10px;
     background: white;
     border: 3px solid #007bff;
     border-radius: 15px;
-    min-height: 120px;
-    padding: 15px;
+    min-height: 110px;
+    padding: 10px;
     margin-bottom: 20px;
     align-items: center;
 }
 
-.frase-item { text-align: center; min-width: 80px; cursor: pointer; }
+.frase-item {
+    text-align: center;
+    min-width: 80px;
+}
 
-/* TABLERO */
+.frase-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* 3. TABLERO */
 .grid-tablero {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -26,7 +50,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; pa
 
 .card {
     background: white;
-    border: 3px solid #ced4da;
+    border: 2px solid #ced4da;
     border-radius: 15px;
     padding: 15px;
     text-align: center;
@@ -35,55 +59,78 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; pa
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.card img { width: 100px; height: 100px; object-fit: contain; }
+.card img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
 
-/* MODAL (Optimizado iPad) */
+/* 4. MODAL (FIJO PARA EVITAR EL ERROR DE GITHUB) */
 .modal {
     display: none;
     position: fixed;
-    z-index: 10000;
-    left: 0; top: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
 }
 
 .modal-content {
-    background: white;
+    background-color: white;
     margin: 5% auto;
-    padding: 20px;
+    padding: 25px;
     width: 90%;
-    max-width: 500px;
+    max-width: 480px;
+    border-radius: 20px;
     max-height: 85vh;
     overflow-y: auto;
-    border-radius: 20px;
-    position: relative;
+    text-align: center;
 }
 
+/* 5. BUSCADOR Y BOTONES */
 #resultados-busqueda {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    max-height: 250px;
-    overflow-y: auto;
     margin: 15px 0;
 }
 
-#resultados-busqueda img { width: 100%; height: 80px; object-fit: contain; border-radius: 8px; cursor: pointer; }
+#resultados-busqueda img {
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #eee;
+}
 
 .opciones-subida {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    border-top: 1px solid #eee;
+    gap: 12px;
+    margin-top: 15px;
     padding-top: 15px;
+    border-top: 1px solid #eee;
 }
 
-/* BOTONES */
-button { border: none; border-radius: 15px; padding: 10px 20px; color: white; font-weight: bold; cursor: pointer; }
-.btn-reproducir { background: #28a745; }
-.btn-borrar-frase { background: #dc3545; }
-.btn-cargar { background: #007bff; width: 100%; }
-.btn-limpiar { position: absolute; top: 5px; right: 5px; background: none; color: red; font-size: 18px; }
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+}
 
-.menu-config { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
-.btn-ajuste { background: #6c757d; }
+.btn-reproducir { background-color: #28a745; }
+.btn-borrar-frase { background-color: #dc3545; }
+.btn-cargar { background-color: #007bff; }
+.btn-limpiar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    color: red;
+    font-size: 20px;
+}
