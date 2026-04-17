@@ -120,3 +120,43 @@ window.seleccionarImagenArasaac = function(url, texto) {
 document.addEventListener("DOMContentLoaded", function() {
     window.renderizarTablero();
 });
+let fraseActual = []; // Array para guardar la frase
+
+window.seleccionarPictograma = function(picto) {
+    // 1. Reproducir la voz inmediatamente
+    if ('speechSynthesis' in window) {
+        const mensaje = new SpeechSynthesisUtterance(picto.texto);
+        mensaje.lang = 'es-MX';
+        window.speechSynthesis.speak(mensaje);
+    }
+
+    // 2. Añadir a la barra de comunicación
+    fraseActual.push(picto);
+    actualizarBarraFrase();
+};
+
+window.actualizarBarraFrase = function() {
+    const contenedor = document.getElementById('contenedor-frase');
+    if (!contenedor) return;
+    
+    contenedor.innerHTML = '';
+    fraseActual.forEach(function(p, index) {
+        const item = document.createElement('div');
+        item.className = 'frase-item';
+        item.innerHTML = `
+            <img src="${p.img}" style="width:50px; height:50px;">
+            <p style="font-size:12px;">${p.texto}</p>
+        `;
+        // Opción: clic para eliminar de la frase
+        item.onclick = function() {
+            fraseActual.splice(index, 1);
+            actualizarBarraFrase();
+        };
+        contenedor.appendChild(item);
+    });
+};
+
+window.borrarFrase = function() {
+    fraseActual = [];
+    actualizarBarraFrase();
+};
