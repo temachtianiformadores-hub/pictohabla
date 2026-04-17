@@ -39,17 +39,82 @@ window.cerrarModal = function() {
     document.getElementById('modal-buscador').style.display = 'none';
 };
 
+// 1. FUNCIÓN DE BÚSQUEDA
 window.ejecutarBusqueda = function() {
-    var termino = document.getElementById('input-busqueda').value;
-    if (!termino) return alert("Escribe algo");
+    var input = document.getElementById('input-busqueda');
+    var termino = input ? input.value : "";
+    
+    if (!termino) {
+        alert("Escribe algo para buscar");
+        return;
+    }
+
+    console.log("Buscando en ARASAAC: " + termino);
 
     fetch('https://api.arasaac.org/api/pictograms/es/search/' + termino)
-        .then(function(res) { return res.json(); })
-        .then(function(data) { mostrarResultados(data); })
-        .catch(function(err) { console.error(err); });
+        .then(function(res) { 
+            if (!res.ok) throw new Error("Error en red");
+            return res.json(); 
+        })
+        .then(function(data) { 
+            // IMPORTANTE: Llamamos a la función global
+            window.mostrarResultados(data); 
+        })
+        .catch(function(err) { 
+            console.error("Error en la API:", err);
+            alert("No se encontraron resultados");
+        });
 };
 
-// ... Asegúrate de tener definidas mostrarResultados, seleccionarPictograma y limpiarCelda con "window." delante.
+// 2. FUNCIÓN PARA DIBUJAR LOS RESULTADOS (La pieza que te faltaba)
+window.mostrarResultados = function(data) {
+    var contenedor = document.getElementById('resultados-busqueda');
+    if (!contenedor) return;
+    
+    contenedor.innerHTML = ''; // Limpiamos resultados anteriores
+
+    // Si no hay datos o no es un array, avisamos
+    if (!data || data.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron imágenes.</p>';
+        return;
+    }
+
+    // Dibujamos cada pictograma encontrado
+    data.forEach(function(item) {
+        var imgUrl = 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png';
+        var img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = item.keywords[0].keyword;
+        img.title = item.keywords[0].keyword;
+        
+        // Al hacer clic, guardamos la imagen en la celda
+        img.onclick = function() {
+            window.seleccionarImagenArasaac(imgUrl, item.keywords[0].keyword);
+        };
+        
+        contenedor.appendChild(img);
+    });
+};
+
+// 3. FUNCIÓN PARA ASIGNAR LA IMAGEN A LA CELDA
+window.seleccionarImagenArasaac = function(url, texto) {
+    // idSeleccionado debe ser una variable global definida al inicio de tu script
+    if (!idSeleccionado) return;
+
+    var indice = datosPictogramas.findIndex(function(p) { 
+        return String(p.id) === String(idSeleccionado); 
+    });
+
+    if (indice !== -1) {
+        datosPictogramas[indice].img = url;
+        datosPictogramas[indice].texto = texto;
+        
+        // Guardamos en LocalStorage y redibujamos el tablero
+        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+        window.renderizarTablero();
+        window.cerrarModal();
+    }
+};
 
 // 4. ARRANQUE
 document.addEventListener("DOMContentLoaded", function() {
