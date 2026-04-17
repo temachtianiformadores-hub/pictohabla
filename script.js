@@ -1,14 +1,12 @@
-// 1. VARIABLES Y DATOS (Estructura Blindada)
-var iniciales = [
+// 1. DATOS Y VARIABLES GLOBALES
+var datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
     { id: "101", texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null },
     { id: "102", texto: "Agrega Picto", img: "logo_nemi_e.jpg", audio: null }
 ];
-
-var datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || iniciales;
 var idSeleccionado = null;
 
-// 2. RENDERIZAR TABLERO
-function renderizarTablero() {
+// 2. FUNCIONES DE RENDERIZADO
+window.renderizarTablero = function() {
     var contenedor = document.getElementById('grid-tablero');
     if (!contenedor) return;
     contenedor.innerHTML = '';
@@ -16,93 +14,44 @@ function renderizarTablero() {
     datosPictogramas.forEach(function(picto) {
         var card = document.createElement('div');
         card.className = 'card';
-        card.onclick = function() { seleccionarPictograma(picto); };
+        card.onclick = function() { window.seleccionarPictograma(picto); };
 
         card.innerHTML = `
-            <button class="btn-limpiar" onclick="limpiarCelda(event, '${picto.id}')">🗑️</button>
-            <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="">
+            <button class="btn-limpiar" onclick="window.limpiarCelda(event, '${picto.id}')">🗑️</button>
+            <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="${picto.texto}">
             <p>${picto.texto}</p>
             <div class="controles-celda">
-                <button onclick="abrirBuscador(event, '${picto.id}')">✏️</button>
+                <button onclick="window.abrirBuscador(event, '${picto.id}')">✏️</button>
             </div>
         `;
         contenedor.appendChild(card);
     });
-    console.log("Tablero renderizado con éxito");
-}
-
-// 3. FUNCIONES GLOBALES (Blindadas para que el HTML siempre las vea)
-window.añadirCelda = function() {
-    datosPictogramas.push({ id: "id-" + Date.now(), texto: "Nuevo Picto", img: "logo_nemi_e.jpg", audio: null });
-    guardarYRefrescar();
 };
 
-window.quitarCelda = function() {
-    datosPictogramas.pop();
-    guardarYRefrescar();
-};
-
-window.reiniciarTableroCompleto = function() {
-    if (confirm("¿Borrar todo el progreso?")) {
-        localStorage.removeItem('tablero_datos');
-        location.reload();
-    }
-};
-
-window.limpiarCelda = function(event, id) {
-    event.stopPropagation();
-    var i = datosPictogramas.findIndex(function(p) { return String(p.id) === String(id); });
-    if (i !== -1) {
-        datosPictogramas[i].texto = "Agrega Picto";
-        datosPictogramas[i].img = "logo_nemi_e.jpg";
-        datosPictogramas[i].audio = null;
-        guardarYRefrescar();
-    }
-};
-
+// 3. FUNCIONES DEL MODAL Y BÚSQUEDA (Globalizadas)
 window.abrirBuscador = function(event, id) {
-    event.stopPropagation();
+    if(event) event.stopPropagation();
     idSeleccionado = id;
-    var modal = document.getElementById('modal-buscador');
-    if (modal) modal.style.display = 'block';
+    document.getElementById('modal-buscador').style.display = 'block';
 };
 
-function guardarYRefrescar() {
-    localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
-    renderizarTablero();
-}
-
-// 4. ARRANQUE ÚNICO
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("App Iniciada correctamente");
-    renderizarTablero();
-});
-// Función para cerrar el buscador de Arasaac
 window.cerrarModal = function() {
-    const modal = document.getElementById('modal-buscador');
-    if (modal) {
-        modal.style.display = 'none';
-        console.log("Modal cerrado correctamente");
-    }
+    document.getElementById('modal-buscador').style.display = 'none';
 };
+
 window.ejecutarBusqueda = function() {
-    console.log("Buscando...");
-    // Tu lógica de búsqueda aquí
+    var termino = document.getElementById('input-busqueda').value;
+    if (!termino) return alert("Escribe algo");
+
+    fetch('https://api.arasaac.org/api/pictograms/es/search/' + termino)
+        .then(function(res) { return res.json(); })
+        .then(function(data) { mostrarResultados(data); })
+        .catch(function(err) { console.error(err); });
 };
 
-window.gestionarGrabacion = function(event) {
-    event.stopPropagation();
-    console.log("Grabando...");
-    // Tu lógica de grabación aquí
-};
+// ... Asegúrate de tener definidas mostrarResultados, seleccionarPictograma y limpiarCelda con "window." delante.
 
-window.guardarCambiosModal = function() {
-    console.log("Guardando...");
-    // Tu lógica de guardado aquí
-};
-// Al final de tu script.js añade estas líneas para asegurar la conexión
-window.ejecutarBusqueda = ejecutarBusqueda;
-window.gestionarGrabacion = gestionarGrabacion;
-window.guardarCambiosModal = guardarCambiosModal;
-window.subirImagenLocal = subirImagenLocal;
-window.cerrarModal = cerrarModal;
+// 4. ARRANQUE
+document.addEventListener("DOMContentLoaded", function() {
+    window.renderizarTablero();
+});
