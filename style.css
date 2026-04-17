@@ -132,16 +132,23 @@ body {
 .modal-content {
     background-color: white;
     position: relative; 
-    margin: 5% auto;
+    margin: 5% auto; /* Centrado simple, sin transform */
     padding: 20px;
     width: 90%;
     max-width: 500px;
-    max-height: 80vh; 
-    overflow-y: auto;   /* Permite scroll si el contenido crece */
+    max-height: 85vh; 
+    overflow-y: auto;
     display: block !important;
     border-radius: 15px;
+    -webkit-overflow-scrolling: touch; /* Suaviza el scroll en iPad */
 }
 
+/* Asegura que el botón de buscar tenga un tamaño mínimo táctil */
+#modal-buscador button {
+    min-height: 44px;
+    padding: 10px 20px;
+    margin-top: 10px;
+}
 #resultados-busqueda {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
