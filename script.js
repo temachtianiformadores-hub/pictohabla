@@ -100,3 +100,9 @@ window.guardarCambiosModal = function() {
     console.log("Guardando...");
     // Tu lógica de guardado aquí
 };
+// Al final de tu script.js añade estas líneas para asegurar la conexión
+window.ejecutarBusqueda = ejecutarBusqueda;
+window.gestionarGrabacion = gestionarGrabacion;
+window.guardarCambiosModal = guardarCambiosModal;
+window.subirImagenLocal = subirImagenLocal;
+window.cerrarModal = cerrarModal;
