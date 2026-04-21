@@ -1,4 +1,4 @@
-/* 1. RESET Y BASE */
+/* 1. AJUSTES GENERALES */
 * {
     margin: 0;
     padding: 0;
@@ -7,130 +7,126 @@
 }
 
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f8f9fa;
-    padding: 15px;
-    color: #333;
-    user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* CENTRA TODO EL CONTENIDO */
 }
 
-/* 2. BARRA DE FRASE (DESLIZABLE) */
+.contenedor-principal {
+    width: 100%;
+    max-width: 1200px; /* Evita que se estire demasiado en pantallas grandes */
+}
+
+/* 2. BARRA DE FRASE */
 #contenedor-frase {
     display: flex !important;
-    flex-direction: row !important;
     overflow-x: auto;
-    gap: 10px;
+    gap: 15px;
     background: white;
     border: 3px solid #007bff;
-    border-radius: 15px;
-    min-height: 110px;
-    padding: 10px;
+    border-radius: 20px;
+    min-height: 120px;
+    padding: 15px;
     margin-bottom: 20px;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .frase-item {
     text-align: center;
-    min-width: 80px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
 }
 
 .frase-item img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
 }
 
-/* 3. TABLERO */
+/* 3. MENÚ DE CONFIGURACIÓN (BOTONES CON COLOR) */
+.menu-config {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.btn-ajuste {
+    padding: 12px 18px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    color: white !important;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.btn-ajuste:active { transform: scale(0.95); }
+
+/* Colores específicos para que se vean bien */
+.btn-añadir { background-color: #6f42c1 !important; }
+.btn-quitar { background-color: #d63384 !important; }
+.btn-cargar { background-color: #007bff !important; }
+.btn-guardar { background-color: #28a745 !important; }
+.btn-reiniciar { background-color: #fd7e14 !important; }
+
+/* 4. TABLERO CENTRADO */
 .grid-tablero {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    justify-content: center;
 }
 
 .card {
     background: white;
-    border: 2px solid #ced4da;
-    border-radius: 15px;
-    padding: 15px;
+    border: 3px solid #dee2e6;
+    border-radius: 20px;
+    padding: 20px;
     text-align: center;
     position: relative;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
 .card img {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     object-fit: contain;
+    margin-bottom: 10px;
 }
 
-/* 4. MODAL (FIJO PARA EVITAR EL ERROR DE GITHUB) */
+/* 5. MODAL (PERFECTO PARA IPAD) */
 .modal {
     display: none;
     position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    z-index: 10000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8);
 }
 
 .modal-content {
     background-color: white;
     margin: 5% auto;
-    padding: 25px;
+    padding: 30px;
     width: 90%;
-    max-width: 480px;
-    border-radius: 20px;
-    max-height: 85vh;
-    overflow-y: auto;
+    max-width: 500px;
+    border-radius: 25px;
     text-align: center;
-}
-
-/* 5. BUSCADOR Y BOTONES */
-#resultados-busqueda {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 15px 0;
-}
-
-#resultados-busqueda img {
-    width: 100%;
-    height: 80px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 1px solid #eee;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
 }
 
 .opciones-subida {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-button {
-    border: none;
-    border-radius: 12px;
-    padding: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    color: white;
-}
-
-.btn-reproducir { background-color: #28a745; }
-.btn-borrar-frase { background-color: #dc3545; }
-.btn-cargar { background-color: #007bff; }
-.btn-limpiar {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: none;
-    color: red;
-    font-size: 20px;
+    gap: 15px;
+    margin-top: 20px;
 }
