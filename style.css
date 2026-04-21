@@ -130,3 +130,37 @@ body {
     gap: 15px;
     margin-top: 20px;
 }
+/* SECCIÓN DE LA FRASE (ZONA SUPERIOR) */
+.seccion-frase {
+    margin-bottom: 50px; /* ESPACIO GRANDE PARA SEPARAR DE LOS AJUSTES */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* BOTONES DE ESCUCHAR Y BORRAR */
+.frase-controles {
+    display: flex;
+    justify-content: center; /* Centra los botones de acción principal */
+    gap: 25px;               /* Espacio generoso entre Escuchar y Borrar */
+    margin-top: 10px;
+}
+
+.btn-reproducir, .btn-borrar-frase {
+    padding: 15px 30px;      /* Más grandes para que sean fáciles de tocar */
+    font-size: 18px;         /* Texto más legible */
+    min-width: 160px;        /* Ancho consistente */
+}
+
+/* MENÚ DE CONFIGURACIÓN (ZONA INFERIOR) */
+.menu-config {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    padding: 20px;
+    background: #e9ecef;     /* Un fondo sutil para diferenciar la zona de ajustes */
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
