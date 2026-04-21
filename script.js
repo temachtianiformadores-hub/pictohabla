@@ -166,3 +166,86 @@ window.reiniciarTableroCompleto = function() {
 };
 
 document.addEventListener("DOMContentLoaded", window.renderizarTablero);
+// --- SUBIDA DE IMAGEN LOCAL ---
+window.subirImagenLocal = function(event) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    // Creamos una URL temporal que el navegador sí pueda leer
+    const urlImagen = URL.createObjectURL(archivo);
+    
+    // El texto lo tomamos del input que tienes en el modal
+    const nombreImagen = document.getElementById('input-texto-modal').value || "Mi Foto";
+
+    const indice = datosPictogramas.findIndex(p => String(p.id) === String(idSeleccionado));
+    if (indice !== -1) {
+        datosPictogramas[indice].img = urlImagen;
+        datosPictogramas[indice].texto = nombreImagen;
+        
+        // Guardamos en LocalStorage
+        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+        window.renderizarTablero();
+        alert("Imagen cargada con éxito");
+    }
+};
+
+// --- GRABADORA DE VOZ (COMPATIBLE CON IPAD) ---
+let mediaRecorder;
+let fragmentosAudio = [];
+
+window.gestionarGrabacion = function(event) {
+    const btn = event.currentTarget;
+    
+    if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        // INICIAR GRABACIÓN
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                fragmentosAudio = [];
+
+                mediaRecorder.ondataavailable = e => fragmentosAudio.push(e.data);
+                
+                mediaRecorder.onstop = () => {
+                    const blobAudio = new Blob(fragmentosAudio, { type: 'audio/mp3' });
+                    const urlAudio = URL.createObjectURL(blobAudio);
+                    
+                    // Asociar el audio al pictograma actual
+                    const indice = datosPictogramas.findIndex(p => String(p.id) === String(idSeleccionado));
+                    if (indice !== -1) {
+                        datosPictogramas[indice].audioPersonalizado = urlAudio;
+                        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+                        alert("Voz grabada y guardada");
+                    }
+                };
+
+                mediaRecorder.start();
+                btn.innerHTML = "🛑 Detener Grabación";
+                btn.style.background = "#ff4444";
+            })
+            .catch(err => alert("Error: Acceso al micrófono denegado. Revisa los ajustes del iPad."));
+    } else {
+        // DETENER GRABACIÓN
+        mediaRecorder.stop();
+        btn.innerHTML = "🎤 Grabar Voz";
+        btn.style.background = "#007bff";
+    }
+};
+
+// --- MODIFICACIÓN AL RENDERIZAR PARA REPRODUCIR VOZ PROPIA ---
+// En tu función window.seleccionarPictograma, cambia la parte del habla por esto:
+window.seleccionarPictograma = function(picto) {
+    if (picto.texto === "Agrega Picto") return;
+
+    // Si tiene audio grabado, lo reproduce. Si no, usa la síntesis de voz.
+    if (picto.audioPersonalizado) {
+        const audio = new Audio(picto.audioPersonalizado);
+        audio.play();
+    } else if ('speechSynthesis' in window) {
+        const mensaje = new SpeechSynthesisUtterance(picto.texto);
+        mensaje.lang = 'es-MX';
+        window.speechSynthesis.speak(mensaje);
+    }
+
+    fraseActual.push(picto);
+    window.actualizarBarraFrase();
+};
