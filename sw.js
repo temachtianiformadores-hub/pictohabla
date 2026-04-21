@@ -1,20 +1,23 @@
-const CACHE_NAME = 'pictohabla-v1';
-const assets = [
-  'index.html',
-  'style.css',
-  'script.js',
-  'manifest.json',
-  'logo-escuela.png'
-];
+// sw.js - Versión de limpieza forzada
+const CACHE_NAME = 'tablero-v' + Date.now(); // Cambia el nombre para forzar actualización
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(assets))
-  );
+self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Obliga al nuevo service worker a activarse de inmediato
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
-  );
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    return caches.delete(cache); // Borra TODA la memoria vieja
+                })
+            );
+        })
+    );
+});
+
+self.addEventListener('fetch', (event) => {
+    // No guarda nada en caché por ahora para que podamos debuguear
+    event.respondWith(fetch(event.request));
 });
