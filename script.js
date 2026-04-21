@@ -6,27 +6,58 @@ var datosPictogramas = JSON.parse(localStorage.getItem('tablero_datos')) || [
 var idSeleccionado = null;
 var fraseActual = [];
 
-// 2. RENDERIZADO DEL TABLERO
+// --- SUSTITUYE TU FUNCIÓN DE RENDERIZADO POR ESTA ---
 window.renderizarTablero = function() {
     var contenedor = document.getElementById('grid-tablero');
     if (!contenedor) return;
     contenedor.innerHTML = '';
 
-    datosPictogramas.forEach(function(picto) {
-        var card = document.createElement('div');
-        card.className = 'card';
-        card.onclick = function() { window.seleccionarPictograma(picto); };
+    // Usamos un for tradicional para máxima compatibilidad con iPads
+    for (var i = 0; i < datosPictogramas.length; i++) {
+        (function(indice) {
+            var picto = datosPictogramas[indice];
+            var card = document.createElement('div');
+            card.className = 'card';
+            
+            // Usamos una función anónima clásica para el clic
+            card.onclick = function() { window.seleccionarPictograma(picto); };
 
-        card.innerHTML = `
-            <button class="btn-limpiar" onclick="window.limpiarCelda(event, '${picto.id}')">🗑️</button>
-            <img src="${picto.img || 'logo_nemi_e.jpg'}" alt="${picto.texto}">
-            <p>${picto.texto}</p>
-            <div class="controles-celda">
-                <button onclick="window.abrirBuscador(event, '${picto.id}')">✏️</button>
-            </div>
-        `;
-        contenedor.appendChild(card);
-    });
+            card.innerHTML = 
+                '<button class="btn-limpiar" onclick="window.limpiarCelda(event, \'' + picto.id + '\')">🗑️</button>' +
+                '<img src="' + (picto.img || 'logo_nemi_e.jpg') + '" alt="' + picto.texto + '">' +
+                '<p>' + picto.texto + '</p>' +
+                '<div class="controles-celda">' +
+                    '<button onclick="window.abrirBuscador(event, \'' + picto.id + '\')">✏️</button>' +
+                '</div>';
+            contenedor.appendChild(card);
+        })(i);
+    }
+};
+
+// --- TAMBIÉN AJUSTA ESTO PARA LA SUBIDA LOCAL ---
+window.subirImagenLocal = function(event) {
+    var archivo = event.target.files[0];
+    if (!archivo) return;
+
+    var urlImagen = URL.createObjectURL(archivo);
+    var nombreImagen = document.getElementById('input-texto-modal').value || "Mi Foto";
+
+    // Buscador compatible
+    var indiceParaEditar = -1;
+    for (var j = 0; j < datosPictogramas.length; j++) {
+        if (String(datosPictogramas[j].id) === String(idSeleccionado)) {
+            indiceParaEditar = j;
+            break;
+        }
+    }
+
+    if (indiceParaEditar !== -1) {
+        datosPictogramas[indiceParaEditar].img = urlImagen;
+        datosPictogramas[indiceParaEditar].texto = nombreImagen;
+        localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
+        window.renderizarTablero();
+        window.cerrarModal();
+    }
 };
 
 // 3. COMUNICACIÓN Y VOZ
