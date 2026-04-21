@@ -1,13 +1,13 @@
-// 1. ESTADO GLOBAL (USANDO VAR PARA COMPATIBILIDAD TOTAL)
+// 1. INICIALIZACIÓN COMPATIBLE
 var datosPictogramas = [];
 var idSeleccionado = null;
 var fraseActual = [];
 
-// Carga inicial segura
+// Intentar cargar datos, si falla, usar predeterminados
 try {
-    var backup = localStorage.getItem('tablero_datos');
-    if (backup) {
-        datosPictogramas = JSON.parse(backup);
+    var guardados = localStorage.getItem('tablero_datos');
+    if (guardados) {
+        datosPictogramas = JSON.parse(guardados);
     } else {
         datosPictogramas = [
             { id: "101", texto: "yo", img: "https://static.arasaac.org/pictograms/2340/2340_300.png" },
@@ -15,53 +15,46 @@ try {
             { id: "103", texto: "Agrega Picto", img: "logo_nemi_e.jpg" }
         ];
     }
-} catch (err) {
-    console.log("Error de almacenamiento");
+} catch (e) {
+    console.log("Error en LocalStorage");
 }
 
-// 2. RENDERIZADO CON "CLICK" REFORZADO
+// 2. RENDERIZADO (ESTILO TRADICIONAL)
 window.renderizarTablero = function() {
-    var grid = document.getElementById('grid-tablero');
-    if (!grid) return;
-    grid.innerHTML = '';
+    var contenedor = document.getElementById('grid-tablero');
+    if (!contenedor) return;
+    contenedor.innerHTML = '';
 
     for (var i = 0; i < datosPictogramas.length; i++) {
-        var p = datosPictogramas[i];
+        var picto = datosPictogramas[i];
         var card = document.createElement('div');
         card.className = 'card';
         
-        // Atributos de datos para identificar la celda
-        card.setAttribute('data-id', p.id);
-        
-        // Usamos una función tradicional para el evento
-        card.onclick = function(e) {
-            var targetId = this.getAttribute('data-id');
-            var encontrado = null;
-            for(var j=0; j<datosPictogramas.length; j++) {
-                if(datosPictogramas[j].id == targetId) { encontrado = datosPictogramas[j]; break; }
-            }
-            if(encontrado) window.seleccionarPictograma(encontrado);
-        };
+        // Creamos una función de cierre para capturar el picto actual
+        (function(p) {
+            card.onclick = function() { window.seleccionarPictograma(p); };
+        })(picto);
 
         card.innerHTML = 
-            '<button class="btn-limpiar" onclick="window.limpiarCelda(event, \'' + p.id + '\')">🗑️</button>' +
-            '<img src="' + (p.img || 'logo_nemi_e.jpg') + '" pointer-events="none">' +
-            '<p>' + p.texto + '</p>' +
+            '<button class="btn-limpiar" onclick="window.limpiarCelda(event, \'' + picto.id + '\')">🗑️</button>' +
+            '<img src="' + (picto.img || 'logo_nemi_e.jpg') + '" onerror="this.src=\'logo_nemi_e.jpg\'">' +
+            '<p>' + picto.texto + '</p>' +
             '<div class="controles-celda">' +
-                '<button onclick="window.abrirBuscador(event, \'' + p.id + '\')">✏️</button>' +
+                '<button onclick="window.abrirBuscador(event, \'' + picto.id + '\')">✏️</button>' +
             '</div>';
         
-        grid.appendChild(card);
+        contenedor.appendChild(card);
     }
 };
 
-// 3. FUNCIONES DE VENTANA (GLOBALES)
+// 3. COMUNICACIÓN
 window.seleccionarPictograma = function(picto) {
-    if (!picto || picto.texto === "Agrega Picto") return;
+    if (picto.texto === "Agrega Picto") return;
     
-    // Voz
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel(); // Detiene voces anteriores
+    if (picto.audioPersonalizado) {
+        var audio = new Audio(picto.audioPersonalizado);
+        audio.play();
+    } else if (window.speechSynthesis) {
         var mensaje = new SpeechSynthesisUtterance(picto.texto);
         mensaje.lang = 'es-MX';
         window.speechSynthesis.speak(mensaje);
@@ -72,54 +65,49 @@ window.seleccionarPictograma = function(picto) {
 };
 
 window.actualizarBarraFrase = function() {
-    var cont = document.getElementById('contenedor-frase');
-    if (!cont) return;
-    cont.innerHTML = '';
+    var contenedor = document.getElementById('contenedor-frase');
+    if (!contenedor) return;
+    contenedor.innerHTML = '';
     for (var i = 0; i < fraseActual.length; i++) {
+        var p = fraseActual[i];
         var item = document.createElement('div');
         item.className = 'frase-item';
-        item.innerHTML = '<img src="' + fraseActual[i].img + '"><p>' + fraseActual[i].texto + '</p>';
-        cont.appendChild(item);
+        item.innerHTML = '<img src="' + p.img + '"><p>' + p.texto + '</p>';
+        contenedor.appendChild(item);
     }
 };
 
+// 4. MODAL Y BUSCADOR
 window.abrirBuscador = function(e, id) {
-    if (e) { e.stopPropagation(); e.preventDefault(); }
+    if (e) e.stopPropagation();
     idSeleccionado = id;
-    var modal = document.getElementById('modal-buscador');
-    if(modal) modal.style.display = 'block';
+    document.getElementById('modal-buscador').style.display = 'block';
 };
 
 window.cerrarModal = function() {
-    var modal = document.getElementById('modal-buscador');
-    if(modal) modal.style.display = 'none';
+    document.getElementById('modal-buscador').style.display = 'none';
 };
 
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
-    if (!input || !input.value) return;
+    var termino = input.value;
+    if (!termino) return;
 
-    // Usamos XMLHttpRequest en lugar de Fetch si el iPad es muy viejo
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://api.arasaac.org/api/pictograms/es/search/' + input.value, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            window.mostrarResultados(JSON.parse(xhr.responseText));
-        }
-    };
-    xhr.send();
+    fetch('https://api.arasaac.org/api/pictograms/es/search/' + termino)
+        .then(function(res) { return res.json(); })
+        .then(function(data) { window.mostrarResultados(data); });
 };
 
 window.mostrarResultados = function(data) {
-    var res = document.getElementById('resultados-busqueda');
-    res.innerHTML = '';
+    var cont = document.getElementById('resultados-busqueda');
+    cont.innerHTML = '';
     for (var i = 0; i < data.length; i++) {
         (function(item) {
             var url = 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png';
             var img = document.createElement('img');
             img.src = url;
             img.onclick = function() { window.seleccionarImagenArasaac(url, item.keywords[0].keyword); };
-            res.appendChild(img);
+            cont.appendChild(img);
         })(data[i]);
     }
 };
@@ -137,24 +125,36 @@ window.seleccionarImagenArasaac = function(url, texto) {
     window.cerrarModal();
 };
 
-// 4. ACCIONES DE BARRA
-window.borrarFrase = function() {
-    fraseActual = [];
-    window.actualizarBarraFrase();
-};
-
+// 5. FUNCIONES DE APOYO
+window.borrarFrase = function() { fraseActual = []; window.actualizarBarraFrase(); };
 window.reproducirFraseCompleta = function() {
-    var t = "";
-    for(var i=0; i<fraseActual.length; i++) { t += fraseActual[i].texto + " "; }
-    if(!t) return;
-    var m = new SpeechSynthesisUtterance(t);
+    var texto = "";
+    for(var i=0; i<fraseActual.length; i++) { texto += fraseActual[i].texto + " "; }
+    var m = new SpeechSynthesisUtterance(texto);
     m.lang = 'es-MX';
     window.speechSynthesis.speak(m);
 };
 
-// 5. INICIO FORZADO
-if (document.readyState === "complete" || document.readyState === "interactive") {
+window.limpiarCelda = function(e, id) {
+    if (e) e.stopPropagation();
+    for (var i = 0; i < datosPictogramas.length; i++) {
+        if (String(datosPictogramas[i].id) === String(id)) {
+            datosPictogramas[i].texto = "Agrega Picto";
+            datosPictogramas[i].img = "logo_nemi_e.jpg";
+        }
+    }
+    localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
     window.renderizarTablero();
-} else {
-    document.addEventListener("DOMContentLoaded", window.renderizarTablero);
-}
+};
+
+window.añadirCelda = function() {
+    datosPictogramas.push({ id: "id-" + Date.now(), texto: "Agrega Picto", img: "logo_nemi_e.jpg" });
+    window.renderizarTablero();
+};
+
+window.quitarCelda = function() { datosPictogramas.pop(); window.renderizarTablero(); };
+
+// ARRANQUE SEGURO
+window.onload = function() {
+    window.renderizarTablero();
+};
