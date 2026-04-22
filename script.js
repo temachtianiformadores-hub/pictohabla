@@ -9,8 +9,8 @@ try {
         datosPictogramas = JSON.parse(guardados);
     } else {
         datosPictogramas = [
-            { id: "101", texto: "yo", img: "https://static.arasaac.org/pictograms/2340/2340_300.png" },
-            { id: "102", texto: "querer", img: "https://static.arasaac.org/pictograms/2344/2344_300.png" },
+            { id: "101", texto: "Agregar Picto", img: "logo_nemi_e.jpg" },
+            { id: "102", texto: "Agregar Picto", img: "logo_nemi_e.jpg" },
             { id: "103", texto: "Agrega Picto", img: "logo_nemi_e.jpg" }
         ];
     }
