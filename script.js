@@ -90,47 +90,35 @@ window.ejecutarBusqueda = function() {
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    if (resultadosContenedor) {
-        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Saltando bloqueo de seguridad...</p>';
-    }
+    resultadosContenedor.innerHTML = '<p>🔍 Buscando...</p>';
 
-    // Usamos AllOrigins como "puente" para evitar el Status 0 en el iPad
-    var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino);
-    var urlProxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(urlArasaac);
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', urlProxy, true);
+    // Intentamos un método que Safari "respeta" más: la etiqueta <script> dinámica (JSONP style)
+    // O en este caso, un Fetch con modo 'cors' explícito
+    var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
 
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                try {
-                    // AllOrigins devuelve un objeto con el JSON dentro de una propiedad llamada 'contents'
-                    var response = JSON.parse(xhr.responseText);
-                    var data = JSON.parse(response.contents);
-                    
-                    if (data && data.length > 0) {
-                        window.mostrarResultados(data);
-                    } else {
-                        resultadosContenedor.innerHTML = '<p>❌ No hay resultados.</p>';
-                    }
-                } catch (e) {
-                    console.log("Error parseando:", e);
-                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos del puente.</p>';
-                }
-            } else {
-                resultadosContenedor.innerHTML = 
-                    '<p style="color: red;">❌ El puente de conexión falló (Status ' + xhr.status + ').</p>';
-            }
+    fetch(urlArasaac, {
+        method: 'GET',
+        mode: 'cors', // Forzamos el modo CORS
+        headers: {
+            'Accept': 'application/json'
         }
-    };
-
-    xhr.onerror = function() {
-        resultadosContenedor.innerHTML = '<p style="color: red;">🚨 Ni siquiera el puente funcionó. Revisa si tienes "Navegación Privada" activa.</p>';
-    };
-
-    xhr.send();
+    })
+    .then(function(response) {
+        if (!response.ok) throw new Error('Error ' + response.status);
+        return response.json();
+    })
+    .then(function(data) {
+        window.mostrarResultados(data);
+    })
+    .catch(function(error) {
+        console.log("Error en iPad:", error);
+        resultadosContenedor.innerHTML = 
+            '<p style="color:red;">Bloqueo de Safari detectado.</p>' +
+            '<p>Toca aquí para intentar abrir la API directamente: ' +
+            '<a href="' + urlArasaac + '" target="_blank">Ver imágenes</a></p>';
+    });
 };
+
 
 // Función de respaldo por si la primera falla con 400
 window.reintentoBusquedaSimple = function(termino) {
