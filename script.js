@@ -76,8 +76,7 @@ window.actualizarBarraFrase = function() {
         contenedor.appendChild(item);
     }
 };
-«`
-/
+
 // 4. MODAL Y BUSCADOR
 window.abrirBuscador = function(e, id) {
     if (e) e.stopPropagation();
@@ -88,7 +87,8 @@ window.abrirBuscador = function(e, id) {
 window.cerrarModal = function() {
     document.getElementById('modal-buscador').style.display = 'none';
 };
-
+«`
+/
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
     var termino = input.value;
@@ -98,7 +98,8 @@ window.ejecutarBusqueda = function() {
         .then(function(res) { return res.json(); })
         .then(function(data) { window.mostrarResultados(data); });
 };
-
+/
+«`
 window.mostrarResultados = function(data) {
     var cont = document.getElementById('resultados-busqueda');
     cont.innerHTML = '';
@@ -125,8 +126,7 @@ window.seleccionarImagenArasaac = function(url, texto) {
     window.renderizarTablero();
     window.cerrarModal();
 };
-/
-«`
+
 // --- FUNCIÓN DE REINICIO CORREGIDA ---
 window.reiniciarTableroCompleto = function() {
     // En móviles, a veces el confirm() se bloquea, así que lo hacemos directo
