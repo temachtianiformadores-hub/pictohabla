@@ -90,37 +90,42 @@ window.ejecutarBusqueda = function() {
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    resultadosContenedor.innerHTML = '<p style="color: #007bff;">⏳ Conectando con ARASAAC...</p>';
+    if (resultadosContenedor) {
+        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Buscando en ARASAAC...</p>';
+    }
 
-    // Usamos un truco de URL para evitar que el iPad use caché vieja
-    var urlBusqueda = 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino);
+    // La API de ARASAAC es sensible. Vamos a enviarla limpia.
+    // Usamos HTTPS directamente y sin parámetros de caché para evitar el 400.
+    var urlBusqueda = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
     
     var xhr = new XMLHttpRequest();
-    // Añadimos un parámetro aleatorio al final para forzar al iPad a buscar de verdad
-    xhr.open('GET', urlBusqueda + '?t=' + new Date().getTime(), true);
+    xhr.open('GET', urlBusqueda, true);
     
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
+            console.log("Status recibido: " + xhr.status); // Para que revises en la laptop
+            
             if (xhr.status === 200) {
                 try {
                     var data = JSON.parse(xhr.responseText);
                     if (data && data.length > 0) {
                         window.mostrarResultados(data);
                     } else {
-                        resultadosContenedor.innerHTML = '<p>❌ No se encontraron imágenes.</p>';
+                        resultadosContenedor.innerHTML = '<p>❌ No se encontraron resultados para "' + termino + '".</p>';
                     }
                 } catch (e) {
-                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos.</p>';
+                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar la respuesta.</p>';
                 }
             } else {
-                // Si el status es 0, es un bloqueo de Safari (CORS)
-                resultadosContenedor.innerHTML = '<p>❌ Error de conexión (Status: ' + xhr.status + '). Revisa tu internet.</p>';
+                // Aquí manejamos el error 400 y el 0
+                resultadosContenedor.innerHTML = 
+                    '<p style="color: red;">❌ Error ' + xhr.status + ': El servidor no pudo procesar la búsqueda.</p>' +
+                    '<p style="font-size: 12px;">Prueba buscando una palabra simple (ej: casa).</p>';
             }
         }
     };
 
-    // Esto ayuda a que Safari no bloquee la petición
-    xhr.setRequestHeader('Accept', 'application/json');
+    // Esto es vital para que Safari no lo bloquee (Status 0)
     xhr.send();
 };
 
