@@ -86,52 +86,47 @@ window.cerrarModal = function() {
 
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
-    var termino = input ? input.value.trim().toLowerCase() : ""; // Forzamos minúsculas
+    var termino = input ? input.value.trim().toLowerCase() : "";
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     if (resultadosContenedor) {
-        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Conectando con ARASAAC...</p>';
+        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Saltando bloqueo de seguridad...</p>';
     }
 
-    // Cambiamos a la ruta de búsqueda de palabras clave (keywords) que es más estable
-    var urlBusqueda = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
+    // Usamos AllOrigins como "puente" para evitar el Status 0 en el iPad
+    var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino);
+    var urlProxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(urlArasaac);
     
     var xhr = new XMLHttpRequest();
-    
-    // El tercer parámetro 'true' es para que sea asíncrono (obligatorio en iPad)
-    xhr.open('GET', urlBusqueda, true);
-    
-    // ESTO ES LO QUE FALTA: Le decimos al servidor que esperamos un JSON
-    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.open('GET', urlProxy, true);
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 try {
-                    var data = JSON.parse(xhr.responseText);
+                    // AllOrigins devuelve un objeto con el JSON dentro de una propiedad llamada 'contents'
+                    var response = JSON.parse(xhr.responseText);
+                    var data = JSON.parse(response.contents);
+                    
                     if (data && data.length > 0) {
                         window.mostrarResultados(data);
                     } else {
-                        resultadosContenedor.innerHTML = '<p>❌ No hay resultados para "' + termino + '".</p>';
+                        resultadosContenedor.innerHTML = '<p>❌ No hay resultados.</p>';
                     }
                 } catch (e) {
-                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos.</p>';
+                    console.log("Error parseando:", e);
+                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos del puente.</p>';
                 }
-            } else if (xhr.status === 400) {
-                // Si da 400, intentamos una ruta alternativa automáticamente
-                resultadosContenedor.innerHTML = '<p>Reintentando búsqueda simple...</p>';
-                window.reintentoBusquedaSimple(termino);
             } else {
                 resultadosContenedor.innerHTML = 
-                    '<p style="color: red;">❌ Error ' + xhr.status + '</p>' +
-                    '<p style="font-size: 11px;">Asegúrate de estar en HTTPS y sin bloqueadores de anuncios.</p>';
+                    '<p style="color: red;">❌ El puente de conexión falló (Status ' + xhr.status + ').</p>';
             }
         }
     };
 
     xhr.onerror = function() {
-        resultadosContenedor.innerHTML = '<p style="color: red;">🚨 Bloqueo de seguridad (Status 0). Safari impidió la conexión.</p>';
+        resultadosContenedor.innerHTML = '<p style="color: red;">🚨 Ni siquiera el puente funcionó. Revisa si tienes "Navegación Privada" activa.</p>';
     };
 
     xhr.send();
