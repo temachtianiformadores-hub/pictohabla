@@ -3,7 +3,6 @@ var datosPictogramas = [];
 var idSeleccionado = null;
 var fraseActual = [];
 
-// Intentar cargar datos, si falla, usar predeterminados
 try {
     var guardados = localStorage.getItem('tablero_datos');
     if (guardados) {
@@ -19,7 +18,7 @@ try {
     console.log("Error en LocalStorage");
 }
 
-// 2. RENDERIZADO (ESTILO TRADICIONAL)
+// 2. RENDERIZADO
 window.renderizarTablero = function() {
     var contenedor = document.getElementById('grid-tablero');
     if (!contenedor) return;
@@ -30,7 +29,6 @@ window.renderizarTablero = function() {
         var card = document.createElement('div');
         card.className = 'card';
         
-        // Creamos una función de cierre para capturar el picto actual
         (function(p) {
             card.onclick = function() { window.seleccionarPictograma(p); };
         })(picto);
@@ -51,10 +49,8 @@ window.renderizarTablero = function() {
 window.seleccionarPictograma = function(picto) {
     if (picto.texto === "Agrega Picto") return;
     
-    if (picto.audioPersonalizado) {
-        var audio = new Audio(picto.audioPersonalizado);
-        audio.play();
-    } else if (window.speechSynthesis) {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
         var mensaje = new SpeechSynthesisUtterance(picto.texto);
         mensaje.lang = 'es-MX';
         window.speechSynthesis.speak(mensaje);
@@ -77,7 +73,7 @@ window.actualizarBarraFrase = function() {
     }
 };
 
-// 4. MODAL Y BUSCADOR
+// 4. MODAL Y BUSCADOR (XMLHttpRequest para iPad)
 window.abrirBuscador = function(e, id) {
     if (e) e.stopPropagation();
     idSeleccionado = id;
@@ -87,19 +83,25 @@ window.abrirBuscador = function(e, id) {
 window.cerrarModal = function() {
     document.getElementById('modal-buscador').style.display = 'none';
 };
-«`
-/
+
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
-    var termino = input.value;
+    var termino = input ? input.value.trim() : "";
     if (!termino) return;
 
-    fetch('https://api.arasaac.org/api/pictograms/es/search/' + termino)
-        .then(function(res) { return res.json(); })
-        .then(function(data) { window.mostrarResultados(data); });
+    var resultadosContenedor = document.getElementById('resultados-busqueda');
+    resultadosContenedor.innerHTML = '<p>Buscando...</p>';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino), true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            window.mostrarResultados(JSON.parse(xhr.responseText));
+        }
+    };
+    xhr.send();
 };
-/
-«`
+
 window.mostrarResultados = function(data) {
     var cont = document.getElementById('resultados-busqueda');
     cont.innerHTML = '';
@@ -127,66 +129,20 @@ window.seleccionarImagenArasaac = function(url, texto) {
     window.cerrarModal();
 };
 
-// --- FUNCIÓN DE REINICIO CORREGIDA ---
-window.reiniciarTableroCompleto = function() {
-    // En móviles, a veces el confirm() se bloquea, así que lo hacemos directo
-    // o con una validación simple.
-    var confirmacion = confirm("¿Estás seguro de que deseas borrar todo el tablero?");
-    
-    if (confirmacion) {
-        try {
-            localStorage.removeItem('tablero_datos');
-            localStorage.clear();
-            // Forzamos la recarga completa para limpiar la memoria del iPad
-            window.location.reload(true); 
-        } catch (e) {
-            // Si falla el storage, al menos refrescamos
-            window.location.href = window.location.pathname + '?refresh=' + Date.now();
-        }
-    }
-};
-
-// --- FUNCIÓN DE BÚSQUEDA REFORZADA ---
-window.ejecutarBusqueda = function() {
-    var input = document.getElementById('input-busqueda');
-    var termino = input ? input.value.trim() : "";
-    
-    if (termino === "") {
-        alert("Por favor, escribe una palabra.");
-        return;
-    }
-
-    var resultadosContenedor = document.getElementById('resultados-busqueda');
-    if (resultadosContenedor) {
-        resultadosContenedor.innerHTML = '<p style="color: blue;">Buscando...</p>';
-    }
-
-    // Usamos XMLHttpRequest para asegurar compatibilidad con iPads viejos
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino), true);
-    
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                try {
-                    var data = JSON.parse(xhr.responseText);
-                    window.mostrarResultados(data);
-                } catch (e) {
-                    resultadosContenedor.innerHTML = '<p>Error en los datos.</p>';
-                }
-            } else {
-                resultadosContenedor.innerHTML = '<p>No se encontró nada o hay error de red.</p>';
-            }
-        }
-    };
-    xhr.send();
-};
-
 // 5. FUNCIONES DE APOYO
+window.reiniciarTableroCompleto = function() {
+    if (confirm("¿Borrar todo el tablero?")) {
+        localStorage.clear();
+        window.location.reload(true);
+    }
+};
+
 window.borrarFrase = function() { fraseActual = []; window.actualizarBarraFrase(); };
+
 window.reproducirFraseCompleta = function() {
     var texto = "";
     for(var i=0; i<fraseActual.length; i++) { texto += fraseActual[i].texto + " "; }
+    if (!texto) return;
     var m = new SpeechSynthesisUtterance(texto);
     m.lang = 'es-MX';
     window.speechSynthesis.speak(m);
@@ -211,6 +167,8 @@ window.añadirCelda = function() {
 
 window.quitarCelda = function() { datosPictogramas.pop(); window.renderizarTablero(); };
 
+// ARRANQUE
+window.onload = function() { window.renderizarTablero(); };
 // ARRANQUE SEGURO
 window.onload = function() {
     window.renderizarTablero();
