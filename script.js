@@ -90,15 +90,37 @@ window.ejecutarBusqueda = function() {
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    resultadosContenedor.innerHTML = '<p>Buscando...</p>';
+    resultadosContenedor.innerHTML = '<p style="color: #007bff;">⏳ Conectando con ARASAAC...</p>';
 
+    // Usamos un truco de URL para evitar que el iPad use caché vieja
+    var urlBusqueda = 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino);
+    
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino), true);
+    // Añadimos un parámetro aleatorio al final para forzar al iPad a buscar de verdad
+    xhr.open('GET', urlBusqueda + '?t=' + new Date().getTime(), true);
+    
     xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            window.mostrarResultados(JSON.parse(xhr.responseText));
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data && data.length > 0) {
+                        window.mostrarResultados(data);
+                    } else {
+                        resultadosContenedor.innerHTML = '<p>❌ No se encontraron imágenes.</p>';
+                    }
+                } catch (e) {
+                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos.</p>';
+                }
+            } else {
+                // Si el status es 0, es un bloqueo de Safari (CORS)
+                resultadosContenedor.innerHTML = '<p>❌ Error de conexión (Status: ' + xhr.status + '). Revisa tu internet.</p>';
+            }
         }
     };
+
+    // Esto ayuda a que Safari no bloquee la petición
+    xhr.setRequestHeader('Accept', 'application/json');
     xhr.send();
 };
 
