@@ -76,7 +76,8 @@ window.actualizarBarraFrase = function() {
         contenedor.appendChild(item);
     }
 };
-
+«`
+/
 // 4. MODAL Y BUSCADOR
 window.abrirBuscador = function(e, id) {
     if (e) e.stopPropagation();
@@ -123,6 +124,62 @@ window.seleccionarImagenArasaac = function(url, texto) {
     localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
     window.renderizarTablero();
     window.cerrarModal();
+};
+/
+«`
+// --- FUNCIÓN DE REINICIO CORREGIDA ---
+window.reiniciarTableroCompleto = function() {
+    // En móviles, a veces el confirm() se bloquea, así que lo hacemos directo
+    // o con una validación simple.
+    var confirmacion = confirm("¿Estás seguro de que deseas borrar todo el tablero?");
+    
+    if (confirmacion) {
+        try {
+            localStorage.removeItem('tablero_datos');
+            localStorage.clear();
+            // Forzamos la recarga completa para limpiar la memoria del iPad
+            window.location.reload(true); 
+        } catch (e) {
+            // Si falla el storage, al menos refrescamos
+            window.location.href = window.location.pathname + '?refresh=' + Date.now();
+        }
+    }
+};
+
+// --- FUNCIÓN DE BÚSQUEDA REFORZADA ---
+window.ejecutarBusqueda = function() {
+    var input = document.getElementById('input-busqueda');
+    var termino = input ? input.value.trim() : "";
+    
+    if (termino === "") {
+        alert("Por favor, escribe una palabra.");
+        return;
+    }
+
+    var resultadosContenedor = document.getElementById('resultados-busqueda');
+    if (resultadosContenedor) {
+        resultadosContenedor.innerHTML = '<p style="color: blue;">Buscando...</p>';
+    }
+
+    // Usamos XMLHttpRequest para asegurar compatibilidad con iPads viejos
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino), true);
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    window.mostrarResultados(data);
+                } catch (e) {
+                    resultadosContenedor.innerHTML = '<p>Error en los datos.</p>';
+                }
+            } else {
+                resultadosContenedor.innerHTML = '<p>No se encontró nada o hay error de red.</p>';
+            }
+        }
+    };
+    xhr.send();
 };
 
 // 5. FUNCIONES DE APOYO
