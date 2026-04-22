@@ -86,47 +86,71 @@ window.cerrarModal = function() {
 
 window.ejecutarBusqueda = function() {
     var input = document.getElementById('input-busqueda');
-    var termino = input ? input.value.trim() : "";
+    var termino = input ? input.value.trim().toLowerCase() : ""; // Forzamos minúsculas
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     if (resultadosContenedor) {
-        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Buscando en ARASAAC...</p>';
+        resultadosContenedor.innerHTML = '<p style="color: blue;">🔍 Conectando con ARASAAC...</p>';
     }
 
-    // La API de ARASAAC es sensible. Vamos a enviarla limpia.
-    // Usamos HTTPS directamente y sin parámetros de caché para evitar el 400.
+    // Cambiamos a la ruta de búsqueda de palabras clave (keywords) que es más estable
     var urlBusqueda = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
     
     var xhr = new XMLHttpRequest();
+    
+    // El tercer parámetro 'true' es para que sea asíncrono (obligatorio en iPad)
     xhr.open('GET', urlBusqueda, true);
     
+    // ESTO ES LO QUE FALTA: Le decimos al servidor que esperamos un JSON
+    xhr.setRequestHeader('Accept', 'application/json');
+
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            console.log("Status recibido: " + xhr.status); // Para que revises en la laptop
-            
             if (xhr.status === 200) {
                 try {
                     var data = JSON.parse(xhr.responseText);
                     if (data && data.length > 0) {
                         window.mostrarResultados(data);
                     } else {
-                        resultadosContenedor.innerHTML = '<p>❌ No se encontraron resultados para "' + termino + '".</p>';
+                        resultadosContenedor.innerHTML = '<p>❌ No hay resultados para "' + termino + '".</p>';
                     }
                 } catch (e) {
-                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar la respuesta.</p>';
+                    resultadosContenedor.innerHTML = '<p>⚠️ Error al procesar datos.</p>';
                 }
+            } else if (xhr.status === 400) {
+                // Si da 400, intentamos una ruta alternativa automáticamente
+                resultadosContenedor.innerHTML = '<p>Reintentando búsqueda simple...</p>';
+                window.reintentoBusquedaSimple(termino);
             } else {
-                // Aquí manejamos el error 400 y el 0
                 resultadosContenedor.innerHTML = 
-                    '<p style="color: red;">❌ Error ' + xhr.status + ': El servidor no pudo procesar la búsqueda.</p>' +
-                    '<p style="font-size: 12px;">Prueba buscando una palabra simple (ej: casa).</p>';
+                    '<p style="color: red;">❌ Error ' + xhr.status + '</p>' +
+                    '<p style="font-size: 11px;">Asegúrate de estar en HTTPS y sin bloqueadores de anuncios.</p>';
             }
         }
     };
 
-    // Esto es vital para que Safari no lo bloquee (Status 0)
+    xhr.onerror = function() {
+        resultadosContenedor.innerHTML = '<p style="color: red;">🚨 Bloqueo de seguridad (Status 0). Safari impidió la conexión.</p>';
+    };
+
     xhr.send();
+};
+
+// Función de respaldo por si la primera falla con 400
+window.reintentoBusquedaSimple = function(termino) {
+    var urlAlt = 'https://api.arasaac.org/api/pictograms/es/bestsearch/' + termino;
+    var xhrAlt = new XMLHttpRequest();
+    xhrAlt.open('GET', urlAlt, true);
+    xhrAlt.setRequestHeader('Accept', 'application/json');
+    xhrAlt.onload = function() {
+        if (xhrAlt.status === 200) {
+            window.mostrarResultados(JSON.parse(xhrAlt.responseText));
+        } else {
+            document.getElementById('resultados-busqueda').innerHTML = '<p>❌ No fue posible conectar con el servidor.</p>';
+        }
+    };
+    xhrAlt.send();
 };
 
 window.mostrarResultados = function(data) {
