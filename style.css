@@ -217,3 +217,37 @@ body {
     border-radius: 15px;
     margin-bottom: 30px;
 }
+/* AJUSTE PARA CELULARES (Pantallas pequeñas) */
+@media (max-width: 600px) {
+    #grid-tablero {
+        display: grid !important;
+        /* Esto crea dos columnas que miden exactamente lo mismo */
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 10px; /* Espacio entre celdas */
+        padding: 10px;
+    }
+
+    /* Ajustamos el tamaño de las tarjetas para que no se vean amontonadas */
+    .card {
+        width: auto !important; /* Que ocupen todo el ancho de su columna */
+        height: auto;
+        padding: 10px;
+    }
+
+    .card img {
+        width: 100%;       /* La imagen se estira al ancho de la celda */
+        max-height: 100px; /* Evitamos que la celda se haga gigante hacia abajo */
+        object-fit: contain;
+    }
+
+    .card p {
+        font-size: 14px;   /* Texto un poco más pequeño para que quepa en una línea */
+        margin-top: 5px;
+    }
+
+    /* Ocultamos o hacemos más pequeños los botones de control en móvil para no estorbar */
+    .btn-limpiar {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+    }
