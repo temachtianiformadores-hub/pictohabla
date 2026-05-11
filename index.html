@@ -48,35 +48,37 @@
         <div class="modal-content">
             <span class="close" onclick="window.cerrarModal()">&times;</span>
             <h2>Editar Celda</h2>
-            
-            <div class="busqueda-arasaac">
-                <input type="text" id="input-busqueda" placeholder="Buscar en ARASAAC...">
-                <button type="button" class="btn-cargar" onclick="window.ejecutarBusqueda()">Buscar</button>
-            </div>
+            <div class="modal-content">
+    <select id="selector-fuente" class="btn-ajuste" style="background: #f8f9fa; color: #333; margin-bottom: 10px; border: 1px solid #ccc;">
+        <option value="arasaac">🔍 ARASAAC (Pictogramas)</option>
+        <option value="google">🌐 Google (Fotos Reales)</option>
+    </select>
 
-            <div id="resultados-busqueda"></div>
-
-            <div class="opciones-subida">
-                <p style="color: #666; font-size: 13px;">O usa una foto y voz propia:</p>
-                
-                <input type="text" id="input-texto-modal" placeholder="Nombre de la imagen...">
-
-                <label class="btn-ajuste" style="background: #6c757d; display: block; text-align: center;">
-                    📷 Elegir Foto
-                    <input type="file" onchange="window.subirImagenLocal(event)" hidden>
-                </label>
-
-                <button id="btn-grabar" onclick="window.gestionarGrabacion(event)" class="btn-ajuste" style="background: #007bff;">
-                    🎤 Grabar Voz
-                </button>
-
-                <button onclick="window.cerrarModal()" style="background: #28a745; margin-top: 10px;">
-                    ✅ Finalizar
-                </button>
-            </div>
-        </div>
+    <div class="busqueda-arasaac">
+        <input type="text" id="input-busqueda" placeholder="¿Qué imagen buscas?">
+        <button type="button" class="btn-cargar" onclick="window.gestionarBusqueda()">Buscar</button>
     </div>
 
+    <div id="resultados-busqueda"></div>
+
+    <div class="opciones-subida">
+        <p style="color: #666; font-size: 13px;">O usa una foto y voz propia:</p>
+        <input type="text" id="input-texto-modal" placeholder="Nombre de la imagen...">
+
+        <label class="btn-ajuste" style="background: #6c757d; display: block; text-align: center; cursor: pointer;">
+            📷 Elegir Foto
+            <input type="file" onchange="window.subirImagenLocal(event)" hidden>
+        </label>
+
+        <button id="btn-grabar" onclick="window.gestionarGrabacion(event)" class="btn-ajuste" style="background: #007bff; width: 100%;">
+            🎤 Grabar Voz
+        </button>
+
+        <button onclick="window.cerrarModal()" style="background: #28a745; margin-top: 10px; width: 100%;">
+            ✅ Finalizar
+        </button>
+    </div>
+</div>
     <script src="script.js"></script>
 
 <script src="script.js?v=1.1"></script>
