@@ -221,3 +221,12 @@ window.quitarCelda = function() {
     datosPictogramas.pop(); 
     window.renderizarTablero(); 
 };
+// Este puente conecta tu botón HTML con la lógica de Arasaac
+window.gestionarBusqueda = function() {
+    console.log("Iniciando búsqueda desde el botón...");
+    if (typeof window.ejecutarBusquedaArasaac === "function") {
+        window.ejecutarBusquedaArasaac();
+    } else {
+        console.error("La función ejecutarBusquedaArasaac no está definida aún.");
+    }
+};
