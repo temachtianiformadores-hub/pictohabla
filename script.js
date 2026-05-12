@@ -108,68 +108,77 @@ window.ejecutarBusquedaArasaac = function() {
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     resultadosContenedor.innerHTML = '<p>🔍 Buscando en ARASAAC...</p>';
 
-    var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
+    var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + encodeURIComponent(termino);
 
     fetch(urlArasaac)
     .then(function(res) { return res.json(); })
-    .then(function(data) { window.mostrarResultados(data); })
+    .then(function(data) {
+        window.mostrarResultados(data); // Usa la función unificada
+    })
     .catch(function(err) {
-        console.log("Error Arasaac:", err);
-        resultadosContenedor.innerHTML = '<p>Error. <button onclick="window.reintentoBusquedaSimple(\''+termino+'\')">Reintentar</button></p>';
+        console.error("Error Arasaac:", err);
+        resultadosContenedor.innerHTML = '<p>Sin conexión con Arasaac.</p>';
     });
 };
 
-// Función para Google (Debes poner tus llaves aquí)
 window.ejecutarBusquedaGoogle = function() {
-    var termino = document.getElementById('input-busqueda').value;
+    var input = document.getElementById('input-busqueda');
+    var termino = input ? input.value.trim() : "";
+    if (!termino) return;
+
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    resultadosContenedor.innerHTML = '<p>🌐 Buscando fotos en Google...</p>';
-    
-    // Aquí pon tus credenciales de Google cuando las tengas
-   // --- AQUÍ PEGAS TU DATO ---
-    var API_KEY = "AIzaSyCLKJQIyji4W7247Kg2lxmavmnUJcQPbP0"; // Esta la sacas de la consola de Google Cloud
-    var CX = "e44b6877cc5634cc8";              // <--- Aquí pegamos lo de tu imagen
-    // ----------------------------
+    resultadosContenedor.innerHTML = '<p>🌐 Buscando fotos reales...</p>';
+
+    // --- TUS LLAVES ---
+    var API_KEY = "TU_API_KEY_AQUÍ"; 
+    var CX = "e44b6877cc5634cc8";
+    // ------------------
 
     var url = "https://www.googleapis.com/customsearch/v1?q=" + encodeURIComponent(termino) + 
               "&searchType=image&key=" + API_KEY + "&cx=" + CX;
+
+    fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        // Google devuelve los resultados en data.items
+        window.mostrarResultados(data.items || []); 
+    })
+    .catch(function(err) {
+        console.error("Error Google:", err);
+        resultadosContenedor.innerHTML = '<p>Error en Google. Revisa tu API Key.</p>';
+    });
 };
 
+// FUNCIÓN UNIFICADA PARA MOSTRAR IMÁGENES
 window.mostrarResultados = function(data) {
     var cont = document.getElementById('resultados-busqueda');
-    if(!cont) return;
+    if (!cont) return;
     cont.innerHTML = '';
-    
-    if(!data || data.length === 0) {
-        cont.innerHTML = '<p>No se encontraron resultados.</p>';
+
+    if (!data || data.length === 0) {
+        cont.innerHTML = '<p>No se encontraron imágenes.</p>';
         return;
     }
 
     for (var i = 0; i < data.length; i++) {
-        (function(item) {
-            var url = 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png';
-            var img = document.createElement('img');
-            img.src = url;
-            img.style.width = "100px";
-            img.style.margin = "5px";
-            img.style.cursor = "pointer";
-            img.onclick = function() { window.seleccionarImagenArasaac(url, item.keywords[0].keyword); };
-            cont.appendChild(img);
-        })(data[i]);
-    }
-};
+        var item = data[i];
+        // Detectar si es de Arasaac (tiene _id) o de Google (tiene link)
+        var urlImagen = item._id ? 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png' : item.link;
+        var textoImg = item.keywords ? item.keywords[0].keyword : "Imagen";
 
-window.seleccionarImagenArasaac = function(url, texto) {
-    for (var i = 0; i < datosPictogramas.length; i++) {
-        if (String(datosPictogramas[i].id) === String(idSeleccionado)) {
-            datosPictogramas[i].img = url;
-            datosPictogramas[i].texto = texto;
-            break;
-        }
+        var img = document.createElement('img');
+        img.src = urlImagen;
+        img.style.width = "100px";
+        img.style.margin = "5px";
+        img.style.cursor = "pointer";
+        img.style.borderRadius = "8px";
+        
+        (function(u, t) {
+            img.onclick = function() { window.seleccionarImagenArasaac(u, t); };
+        })(urlImagen, textoImg);
+        
+        cont.appendChild(img);
     }
-    localStorage.setItem('tablero_datos', JSON.stringify(datosPictogramas));
-    window.renderizarTablero();
-    window.cerrarModal();
 };
 
 // 5. FUNCIONES DE APOYO
