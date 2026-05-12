@@ -100,7 +100,7 @@ window.ejecutarBusquedaArasaac = function() {
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     resultadosContenedor.innerHTML = '<p>🔍 Buscando...</p>';
 
-
+ 
 };
     // Intentamos un método que Safari "respeta" más: la etiqueta <script> dinámica (JSONP style)
     // O en este caso, un Fetch con modo 'cors' explícito
@@ -211,9 +211,12 @@ window.añadirCelda = function() {
 
 window.quitarCelda = function() { datosPictogramas.pop(); window.renderizarTablero(); };
 
-// ARRANQUE
-window.onload = function() { window.renderizarTablero(); };
-// ARRANQUE SEGURO
+// ARRANQUE ÚNICO Y SEGURO
 window.onload = function() {
-    window.renderizarTablero();
+    console.log("Iniciando tablero...");
+    if (typeof window.renderizarTablero === "function") {
+        window.renderizarTablero();
+    } else {
+        console.error("Error: renderizarTablero no está definida. Revisa si hay errores de llaves {} arriba.");
+    }
 };
