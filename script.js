@@ -85,6 +85,14 @@ window.cerrarModal = function() {
 };
 
 window.ejecutarBusqueda = function() {
+    var fuente = document.getElementById('selector-fuente').value;
+    if (fuente === "arasaac") {
+        window.ejecutarBusquedaArasaac();
+    } else {
+        window.ejecutarBusquedaGoogle();
+    }
+};    
+window.ejecutarBusquedaArasaac = function() {
     var input = document.getElementById('input-busqueda');
     var termino = input ? input.value.trim().toLowerCase() : "";
     if (!termino) return;
@@ -92,6 +100,8 @@ window.ejecutarBusqueda = function() {
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     resultadosContenedor.innerHTML = '<p>🔍 Buscando...</p>';
 
+
+};
     // Intentamos un método que Safari "respeta" más: la etiqueta <script> dinámica (JSONP style)
     // O en este caso, un Fetch con modo 'cors' explícito
     var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
