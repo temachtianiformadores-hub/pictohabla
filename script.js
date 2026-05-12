@@ -126,6 +126,7 @@ window.ejecutarBusquedaArasaac = function() {
             '<p style="color:red;">Bloqueo de Safari detectado.</p>' +
             '<p>Toca aquí para intentar abrir la API directamente: ' +
             '<a href="' + urlArasaac + '" target="_blank">Ver imágenes</a></p>';
+       }    
     });
 };
 
