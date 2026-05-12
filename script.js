@@ -130,7 +130,7 @@ window.ejecutarBusquedaGoogle = function() {
     resultadosContenedor.innerHTML = '<p>🌐 Buscando fotos reales...</p>';
 
     // --- TUS LLAVES ---
-    var API_KEY = "TU_API_KEY_AQUÍ"; 
+    var API_KEY = "AIzaSyCLKJQIyji4W7247Kg2lxmavmnUJcQPbP0"; 
     var CX = "e44b6877cc5634cc8";
     // ------------------
 
