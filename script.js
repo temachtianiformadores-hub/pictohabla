@@ -126,7 +126,13 @@ window.ejecutarBusquedaGoogle = function() {
     resultadosContenedor.innerHTML = '<p>🌐 Buscando fotos en Google...</p>';
     
     // Aquí pon tus credenciales de Google cuando las tengas
-    alert("Configura tu API Key de Google para usar esta función.");
+   // --- AQUÍ PEGAS TU DATO ---
+    var API_KEY = "AIzaSyCLKJQIyji4W7247Kg2lxmavmnUJcQPbP0"; // Esta la sacas de la consola de Google Cloud
+    var CX = "e44b6877cc5634cc8";              // <--- Aquí pegamos lo de tu imagen
+    // ----------------------------
+
+    var url = "https://www.googleapis.com/customsearch/v1?q=" + encodeURIComponent(termino) + 
+              "&searchType=image&key=" + API_KEY + "&cx=" + CX;
 };
 
 window.mostrarResultados = function(data) {
