@@ -125,7 +125,7 @@ window.ejecutarBusquedaArasaac = function() {
         if (!response.ok) throw new Error('Error ' + response.status);
         return response.json();
     })
-    })
+
     .then(function(data) {
         window.mostrarResultados(data);
     })
