@@ -116,26 +116,25 @@ window.ejecutarBusquedaArasaac = function() {
 
     fetch(urlArasaac, {
         method: 'GET',
-        mode: 'cors', // Forzamos el modo CORS
-        headers: {
-            'Accept': 'application/json'
-        }
+        mode: 'cors',
+        headers: { 'Accept': 'application/json' }
     })
     .then(function(response) {
-        if (!response.ok) throw new Error('Error ' + response.status);
         return response.json();
     })
-
     .then(function(data) {
         window.mostrarResultados(data);
     })
     .catch(function(error) {
         console.log("Error:", error);
-        var resultadosContenedor = document.getElementById('resultados-busqueda');
-        if (resultadosContenedor) {
-            resultadosContenedor.innerHTML = '<p style="color:red;">Error de conexión.</p>';
-        }
     });
+};
+
+window.mostrarResultados = function(data) {
+    var resultadosContenedor = document.getElementById('resultados-busqueda');
+    if (!resultadosContenedor) return;
+    resultadosContenedor.innerHTML = '';
+    // Aquí sigue tu código para mostrar las imágenes...
 };
 
 
