@@ -1,4 +1,4 @@
-// 1. INICIALIZACIÓN COMPATIBLE
+// 1. INICIALIZACIÓN
 var datosPictogramas = [];
 var idSeleccionado = null;
 var fraseActual = [];
@@ -11,21 +11,19 @@ try {
         datosPictogramas = [
             { id: "101", texto: "Agregar Picto", img: "logo_nemi_e.jpg" },
             { id: "102", texto: "Agregar Picto", img: "logo_nemi_e.jpg" },
-            { id: "103", texto: "Agrega Picto", img: "logo_nemi_e.jpg" }
+            { id: "103", texto: "Agregar Picto", img: "logo_nemi_e.jpg" }
         ];
     }
 } catch (e) {
     console.log("Error en LocalStorage");
 }
-// ARRANQUE ÚNICO Y SEGURO
+
+// ARRANQUE
 window.onload = function() {
     console.log("Iniciando tablero...");
-    if (typeof window.renderizarTablero === "function") {
-        window.renderizarTablero();
-    } else {
-        console.error("Error: renderizarTablero no está definida. Revisa si hay errores de llaves {} arriba.");
-    }
+    window.renderizarTablero();
 };
+
 // 2. RENDERIZADO
 window.renderizarTablero = function() {
     var contenedor = document.getElementById('grid-tablero');
@@ -55,7 +53,7 @@ window.renderizarTablero = function() {
 
 // 3. COMUNICACIÓN
 window.seleccionarPictograma = function(picto) {
-    if (picto.texto === "Agrega Picto") return;
+    if (picto.texto === "Agregar Picto") return;
     
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -81,7 +79,7 @@ window.actualizarBarraFrase = function() {
     }
 };
 
-// 4. MODAL Y BUSCADOR (XMLHttpRequest para iPad)
+// 4. MODAL Y BUSCADORES
 window.abrirBuscador = function(e, id) {
     if (e) e.stopPropagation();
     idSeleccionado = id;
@@ -93,72 +91,62 @@ window.cerrarModal = function() {
 };
 
 window.ejecutarBusqueda = function() {
-    var fuente = document.getElementById('selector-fuente').value;
+    var fuenteElem = document.getElementById('selector-fuente');
+    var fuente = fuenteElem ? fuenteElem.value : "arasaac";
     if (fuente === "arasaac") {
         window.ejecutarBusquedaArasaac();
     } else {
         window.ejecutarBusquedaGoogle();
     }
-};    
+};
+
 window.ejecutarBusquedaArasaac = function() {
     var input = document.getElementById('input-busqueda');
     var termino = input ? input.value.trim().toLowerCase() : "";
     if (!termino) return;
 
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    resultadosContenedor.innerHTML = '<p>🔍 Buscando...</p>';
+    resultadosContenedor.innerHTML = '<p>🔍 Buscando en ARASAAC...</p>';
 
- 
-};
-    // Intentamos un método que Safari "respeta" más: la etiqueta <script> dinámica (JSONP style)
-    // O en este caso, un Fetch con modo 'cors' explícito
     var urlArasaac = 'https://api.arasaac.org/api/pictograms/es/search/' + termino;
 
-    fetch(urlArasaac, {
-        method: 'GET',
-        mode: 'cors',
-        headers: { 'Accept': 'application/json' }
-    })
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(data) {
-        window.mostrarResultados(data);
-    })
-    .catch(function(error) {
-        console.log("Error:", error);
+    fetch(urlArasaac)
+    .then(function(res) { return res.json(); })
+    .then(function(data) { window.mostrarResultados(data); })
+    .catch(function(err) {
+        console.log("Error Arasaac:", err);
+        resultadosContenedor.innerHTML = '<p>Error. <button onclick="window.reintentoBusquedaSimple(\''+termino+'\')">Reintentar</button></p>';
     });
 };
 
-window.mostrarResultados = function(data) {
+// Función para Google (Debes poner tus llaves aquí)
+window.ejecutarBusquedaGoogle = function() {
+    var termino = document.getElementById('input-busqueda').value;
     var resultadosContenedor = document.getElementById('resultados-busqueda');
-    if (!resultadosContenedor) return;
-    resultadosContenedor.innerHTML = '';
-    // Aquí sigue tu código para mostrar las imágenes..
-// Función de respaldo por si la primera falla con 400
-window.reintentoBusquedaSimple = function(termino) {
-    var urlAlt = 'https://api.arasaac.org/api/pictograms/es/bestsearch/' + termino;
-    var xhrAlt = new XMLHttpRequest();
-    xhrAlt.open('GET', urlAlt, true);
-    xhrAlt.setRequestHeader('Accept', 'application/json');
-    xhrAlt.onload = function() {
-        if (xhrAlt.status === 200) {
-            window.mostrarResultados(JSON.parse(xhrAlt.responseText));
-        } else {
-            document.getElementById('resultados-busqueda').innerHTML = '<p>❌ No fue posible conectar con el servidor.</p>';
-        }
-    };
-    xhrAlt.send();
+    resultadosContenedor.innerHTML = '<p>🌐 Buscando fotos en Google...</p>';
+    
+    // Aquí pon tus credenciales de Google cuando las tengas
+    alert("Configura tu API Key de Google para usar esta función.");
 };
 
 window.mostrarResultados = function(data) {
     var cont = document.getElementById('resultados-busqueda');
+    if(!cont) return;
     cont.innerHTML = '';
+    
+    if(!data || data.length === 0) {
+        cont.innerHTML = '<p>No se encontraron resultados.</p>';
+        return;
+    }
+
     for (var i = 0; i < data.length; i++) {
         (function(item) {
             var url = 'https://static.arasaac.org/pictograms/' + item._id + '/' + item._id + '_300.png';
             var img = document.createElement('img');
             img.src = url;
+            img.style.width = "100px";
+            img.style.margin = "5px";
+            img.style.cursor = "pointer";
             img.onclick = function() { window.seleccionarImagenArasaac(url, item.keywords[0].keyword); };
             cont.appendChild(img);
         })(data[i]);
@@ -201,7 +189,7 @@ window.limpiarCelda = function(e, id) {
     if (e) e.stopPropagation();
     for (var i = 0; i < datosPictogramas.length; i++) {
         if (String(datosPictogramas[i].id) === String(id)) {
-            datosPictogramas[i].texto = "Agrega Picto";
+            datosPictogramas[i].texto = "Agregar Picto";
             datosPictogramas[i].img = "logo_nemi_e.jpg";
         }
     }
@@ -210,10 +198,11 @@ window.limpiarCelda = function(e, id) {
 };
 
 window.añadirCelda = function() {
-    datosPictogramas.push({ id: "id-" + Date.now(), texto: "Agrega Picto", img: "logo_nemi_e.jpg" });
+    datosPictogramas.push({ id: "id-" + Date.now(), texto: "Agregar Picto", img: "logo_nemi_e.jpg" });
     window.renderizarTablero();
 };
 
-window.quitarCelda = function() { datosPictogramas.pop(); window.renderizarTablero(); };
+window.quitarCelda = function() { 
+    datosPictogramas.pop(); 
+    window.renderizarTablero(); 
 };
-
