@@ -17,7 +17,15 @@ try {
 } catch (e) {
     console.log("Error en LocalStorage");
 }
-
+// ARRANQUE ÚNICO Y SEGURO
+window.onload = function() {
+    console.log("Iniciando tablero...");
+    if (typeof window.renderizarTablero === "function") {
+        window.renderizarTablero();
+    } else {
+        console.error("Error: renderizarTablero no está definida. Revisa si hay errores de llaves {} arriba.");
+    }
+};
 // 2. RENDERIZADO
 window.renderizarTablero = function() {
     var contenedor = document.getElementById('grid-tablero');
@@ -211,13 +219,5 @@ window.añadirCelda = function() {
 };
 
 window.quitarCelda = function() { datosPictogramas.pop(); window.renderizarTablero(); };
-
-// ARRANQUE ÚNICO Y SEGURO
-window.onload = function() {
-    console.log("Iniciando tablero...");
-    if (typeof window.renderizarTablero === "function") {
-        window.renderizarTablero();
-    } else {
-        console.error("Error: renderizarTablero no está definida. Revisa si hay errores de llaves {} arriba.");
-    }
 };
+
