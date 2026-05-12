@@ -221,31 +221,30 @@ window.quitarCelda = function() {
     datosPictogramas.pop(); 
     window.renderizarTablero(); 
 };
-// Este nuevo puente conecta el botón con AMBOS buscadores
-window.gestionarBusqueda = function() {
-    console.log("Iniciando búsqueda inteligente...");
-    
-    // 1. Detectamos qué eligió el usuario en el modal
+// --- UNIFICACIÓN TOTAL DE BÚSQUEDA ---
+
+window.ejecutarBusqueda = function() {
     var selector = document.getElementById('selector-fuente');
     var fuente = selector ? selector.value : "arasaac";
+    
+    console.log("Comando recibido. Fuente actual: " + fuente);
 
-    // 2. Decidimos qué función llamar
     if (fuente === "google") {
-        console.log("Cambiando a búsqueda de fotos reales...");
+        console.log("Llamando a Google Images...");
         if (typeof window.ejecutarBusquedaGoogle === "function") {
             window.ejecutarBusquedaGoogle();
         } else {
-            console.error("Error: ejecutarBusquedaGoogle no está definida.");
+            console.error("Error: La función de Google no existe.");
         }
     } else {
-        console.log("Buscando pictogramas en Arasaac...");
+        console.log("Llamando a Arasaac...");
         if (typeof window.ejecutarBusquedaArasaac === "function") {
             window.ejecutarBusquedaArasaac();
         } else {
-            console.error("Error: ejecutarBusquedaArasaac no está definida.");
+            console.error("Error: La función de Arasaac no existe.");
         }
     }
 };
 
-// Por si tu botón usa el nombre 'ejecutarBusqueda', lo enlazamos también
-window.ejecutarBusqueda = window.gestionarBusqueda;
+// Forzamos que cualquier botón apunte a esta nueva lógica
+window.gestionarBusqueda = window.ejecutarBusqueda;
