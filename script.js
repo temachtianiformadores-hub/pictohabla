@@ -134,10 +134,7 @@ window.mostrarResultados = function(data) {
     var resultadosContenedor = document.getElementById('resultados-busqueda');
     if (!resultadosContenedor) return;
     resultadosContenedor.innerHTML = '';
-    // Aquí sigue tu código para mostrar las imágenes...
-};
-
-
+    // Aquí sigue tu código para mostrar las imágenes..
 // Función de respaldo por si la primera falla con 400
 window.reintentoBusquedaSimple = function(termino) {
     var urlAlt = 'https://api.arasaac.org/api/pictograms/es/bestsearch/' + termino;
