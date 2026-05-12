@@ -117,16 +117,17 @@ window.ejecutarBusquedaArasaac = function() {
         if (!response.ok) throw new Error('Error ' + response.status);
         return response.json();
     })
+    })
     .then(function(data) {
         window.mostrarResultados(data);
     })
     .catch(function(error) {
-        console.log("Error en iPad:", error);
-        resultadosContenedor.innerHTML = 
-            '<p style="color:red;">Bloqueo de Safari detectado.</p>' +
-            '<p>Toca aquí para intentar abrir la API directamente: ' +
-            '<a href="' + urlArasaac + '" target="_blank">Ver imágenes</a></p>';   
-    })
+        console.log("Error:", error);
+        var resultadosContenedor = document.getElementById('resultados-busqueda');
+        if (resultadosContenedor) {
+            resultadosContenedor.innerHTML = '<p style="color:red;">Error de conexión.</p>';
+        }
+    });
 };
 
 
