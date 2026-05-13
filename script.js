@@ -131,7 +131,7 @@ window.ejecutarBusquedaGoogle = function() {
 
     // --- TUS LLAVES ---
     var API_KEY = "AIzaSyCLKJQIyji4W7247Kg2lxmavmnUJcQPbP0"; 
-    var CX = "e44b6877cc5634cc8";
+    var CX = "e269f0314e540432a";
     // ------------------
 
     var url = "https://www.googleapis.com/customsearch/v1?q=" + encodeURIComponent(termino) + 
