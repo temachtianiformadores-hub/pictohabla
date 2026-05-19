@@ -132,11 +132,11 @@ window.ejecutarBusquedaGoogle = function() {
     // --- TUS LLAVES ---
     
     
-    var parte1 ="AIzaSyDR2hs4adO-9nCV8HmjciJ3";
-var parte2 ="ujgEzrGwVDM";
+    var parte1 = "AIzaSyDR2hs4adO-9nCV8HmjciJ3";
+var parte2 = "ujgEzrGwVDM";
 
 var API_KEY = parte1 + parte2; 
-var CX ="e269f0314e540432a";
+var CX = "e269f0314e540432a";
     // ------------------
 
     var url = "https://www.googleapis.com/customsearch/v1?q=" + encodeURIComponent(termino) + 
